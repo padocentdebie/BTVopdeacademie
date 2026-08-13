@@ -525,7 +525,8 @@
     { value: 'vorige-les', label: 'Uit de vorige les' },
     { value: 'itslearning', label: 'Uit It\'s Learning' },
     { value: 'html', label: 'HTML (spel/interactief)' },
-    { value: 'file', label: 'Bestand toevoegen' }
+    { value: 'file', label: 'Bestand toevoegen' },
+    { value: 'iframe', label: 'Iframe (externe pagina)' }
   ];
 
   // ---------- LOAD TOPICS EN DATA ----------
@@ -678,7 +679,6 @@
         if (!fileUrl) {
           container.innerHTML = `<p style="color:#94a3b8;">Geen bestand geüpload.</p>`;
         } else {
-          // Bepaal of het een afbeelding, PDF of ander bestand is
           const ext = fileName.split('.').pop().toLowerCase();
           const imageExts = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp', 'svg'];
           let previewHtml = '';
@@ -687,7 +687,6 @@
           } else if (ext === 'pdf') {
             previewHtml = `<iframe src="${escapeHtml(fileUrl)}" class="file-preview" style="width:100%; height:500px; border:none; border-radius:12px;"></iframe>`;
           } else {
-            // Downloadlink voor andere bestanden
             previewHtml = `<a href="${escapeHtml(fileUrl)}" target="_blank" download="${escapeHtml(fileName)}" style="display:inline-block; padding:8px 16px; background:#f7c948; color:#0a1e3f; border-radius:8px; text-decoration:none; font-weight:600;">📥 Download ${escapeHtml(fileName)}</a>`;
           }
           container.innerHTML = `
@@ -696,6 +695,18 @@
               ${previewHtml}
             </div>
           `;
+        }
+        break;
+      case 'iframe':
+        const iframeUrl = comp.iframeUrl || '';
+        if (iframeUrl) {
+          container.innerHTML = `
+            <div style="width:100%; border-radius:12px; overflow:hidden; border:1px solid #e2e8f0;">
+              <iframe src="${escapeHtml(iframeUrl)}" style="width:100%; height:600px; border:none; display:block;" allowfullscreen sandbox="allow-scripts allow-same-origin allow-forms"></iframe>
+            </div>
+          `;
+        } else {
+          container.innerHTML = `<p style="color:#94a3b8;">Geen URL ingevoerd.</p>`;
         }
         break;
       default: container.textContent = 'Onbekend type';
@@ -834,7 +845,6 @@
   function uploadFile(file, topicId, compId) {
     return new Promise((resolve, reject) => {
       if (!file) reject('Geen bestand geselecteerd.');
-      // Controleer grootte (max 10 MB)
       if (file.size > 10 * 1024 * 1024) {
         reject('Bestand is groter dan 10 MB.');
         return;
@@ -843,7 +853,6 @@
       const uploadTask = storageRef.put(file);
       uploadTask.on('state_changed',
         (snapshot) => {
-          // Upload progress (optioneel)
           const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
           console.log('Upload is ' + progress + '% done');
         },
@@ -915,6 +924,12 @@
         <div id="file-preview-modal" style="margin-top:8px;"></div>
         <p style="font-size:0.9rem;color:#64748b;margin-top:4px;">Max 10 MB. Toegestane types: afbeeldingen, PDF, Office documenten, tekst.</p>`;
         break;
+      case 'iframe':
+        const iframeUrl = existing ? existing.iframeUrl || '' : '';
+        html += `<label>URL van de externe pagina</label>
+        <input id="modal-iframeUrl" value="${escapeHtml(iframeUrl)}" placeholder="https://voorbeeld.nl/les" style="width:100%; padding:10px 14px; border:1px solid #e2e8f0; border-radius:12px;">
+        <p style="font-size:0.9rem; color:#64748b; margin-top:4px;">Plak hier de volledige URL van de les die je wilt tonen. Het iframe wordt 600px hoog en scrollbaar.</p>`;
+        break;
       default: html += `<p>Onbekend type</p>`;
     }
     html += `<label style="margin-top:15px;"><input type="checkbox" id="modal-active" ${existing && existing.active === false ? '' : 'checked'}> Component actief</label>`;
@@ -935,7 +950,6 @@
             const reader = new FileReader();
             reader.onload = function(event) {
               const dataUrl = event.target.result;
-              // Toon preview voor afbeeldingen en PDF
               const ext = file.name.split('.').pop().toLowerCase();
               const imageExts = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp', 'svg'];
               if (imageExts.includes(ext)) {
@@ -974,23 +988,20 @@
         const fileInput = document.getElementById('modal-file');
         if (fileInput && fileInput.files.length > 0) {
           const file = fileInput.files[0];
-          // Upload bestand
           const saveBtn = document.querySelector('#modal-overlay .btn-save');
           saveBtn.disabled = true;
           saveBtn.textContent = 'Uploaden...';
           uploadFile(file, currentTopicId, currentComponentId || 'new').then(downloadURL => {
             newComp.fileURL = downloadURL;
             newComp.fileName = file.name;
-            // Sla op in database
             finishSave(newComp);
           }).catch(error => {
             alert('Fout bij uploaden: ' + error.message);
             saveBtn.disabled = false;
             saveBtn.textContent = 'Opslaan';
           });
-          return; // wacht op upload
+          return;
         } else if (modalMode === 'edit' && document.getElementById('modal-file').files.length === 0) {
-          // Bewerken zonder nieuw bestand: behoud oude
           const existingComp = data[currentTopicId][currentComponentId];
           newComp.fileURL = existingComp.fileURL;
           newComp.fileName = existingComp.fileName;
@@ -998,6 +1009,9 @@
           alert('Selecteer een bestand.');
           return;
         }
+        break;
+      case 'iframe':
+        newComp.iframeUrl = document.getElementById('modal-iframeUrl').value.trim();
         break;
       default: newComp = { type };
     }
@@ -1011,7 +1025,6 @@
     if (modalMode === 'add') list.push(newComp); else { const idx = currentComponentId; if (idx !== null && idx < list.length) { newComp.id = list[idx].id; list[idx] = newComp; } }
     data[topicId] = list;
     db.ref(`draft/${topicId}`).set(list);
-    // Herstel knop
     const saveBtn = document.querySelector('#modal-overlay .btn-save');
     if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Opslaan'; }
     closeModal();
@@ -1026,7 +1039,6 @@
       if (comp.type === 'tekenbord') db.ref(`drawings/${topicId}/${comp.id}`).remove();
       if (comp.type === 'vorige-les') db.ref(`vorigeLes/${topicId}/${comp.id}`).remove();
       if (comp.type === 'file' && comp.fileURL) {
-        // Verwijder bestand uit Storage
         const storageRef = storage.refFromURL(comp.fileURL);
         storageRef.delete().catch(err => console.warn('Kon bestand niet verwijderen:', err));
       }
