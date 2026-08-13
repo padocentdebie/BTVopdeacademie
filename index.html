@@ -392,7 +392,6 @@
     switchBtn.textContent = '👩‍🎓 Schakel naar studentenmodus';
     switchBtn.style.background = '#f7c948';
     switchBtn.style.color = '#0a1e3f';
-    // Fullscreen knop verbergen voor docent
     fullscreenBtn.style.display = 'none';
   } else {
     modeIndicator.textContent = '👩‍🎓 Student (bekijken)';
@@ -400,7 +399,6 @@
     switchBtn.textContent = '🔄 Schakel naar docentmodus';
     switchBtn.style.background = '#f7c948';
     switchBtn.style.color = '#0a1e3f';
-    // Fullscreen knop tonen als browser het ondersteunt
     if (document.documentElement.requestFullscreen) {
       fullscreenBtn.style.display = 'inline-block';
     }
@@ -417,7 +415,6 @@
     }
   });
 
-  // Update knoptekst bij fullscreen change
   document.addEventListener('fullscreenchange', function() {
     if (document.fullscreenElement) {
       fullscreenBtn.textContent = '⛶ Verlaat volledig scherm';
@@ -506,28 +503,23 @@
     const topicsRef = db.ref('topics');
     const dataRef = db.ref(isDocentMode ? 'draft' : 'published');
 
-    // Eerst topics ophalen
     topicsRef.on('value', (snapshot) => {
       let topicsVal = snapshot.val();
       if (!topicsVal || topicsVal.length === 0) {
-        // Default topics aanmaken
         const defaultTopics = getDefaultTopics();
         topicsRef.set(defaultTopics);
         topicsVal = defaultTopics;
-        // Ook default componenten aanmaken
         const defaultData = getDefaultComponents();
         dataRef.set(defaultData);
       }
-      topics = topicsVal; // array
-      renderAccordion();  // accordeon opnieuw bouwen
+      topics = topicsVal;
+      renderAccordion();
 
-      // Dan componenten laden
       dataRef.on('value', (snap) => {
         const val = snap.val();
         if (val) {
           data = val;
         } else {
-          // Als er geen data is, maak lege arrays voor elk topic
           const empty = {};
           topics.forEach(t => empty[t.id] = []);
           dataRef.set(empty);
@@ -550,7 +542,6 @@
       header.onclick = () => toggleAccordion(header, topic.id);
       const panel = document.createElement('div'); panel.className = 'accordion-panel'; panel.id = `panel-${topic.id}`;
       
-      // Voeg lesdoelen toe bovenaan
       const goalsDiv = document.createElement('div');
       goalsDiv.className = 'lesson-goals';
       goalsDiv.innerHTML = `<strong>🎯 Lesdoelen</strong><br>${escapeHtml(topic.goals || 'Geen doelen ingevoerd.')}`;
@@ -698,26 +689,91 @@
     input.value = '';
   }
 
-  // ---------- TEKENBORD ----------
+  // ---------- TEKENBORD - REALTIME SYNCHRONISATIE ----------
   let drawingState = {};
+
   function initDrawing(topicId, compId) {
-    const canvas = document.getElementById(`canvas-${compId}`); if (!canvas) return;
-    const ctx = canvas.getContext('2d'); const key = `${topicId}-${compId}`; drawingState[key] = { canvas, ctx, isDrawing: false };
-    db.ref(`drawings/${topicId}/${compId}`).once('value').then(sn => {
-      const dataUrl = sn.val(); if (dataUrl) { const img = new Image(); img.onload = () => { ctx.clearRect(0, 0, canvas.width, canvas.height); ctx.drawImage(img, 0, 0); }; img.src = dataUrl; }
+    const canvas = document.getElementById(`canvas-${compId}`);
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const key = `${topicId}-${compId}`;
+    drawingState[key] = { canvas, ctx, isDrawing: false };
+
+    // Realtime listener: bij elke wijziging de tekening opnieuw laden
+    db.ref(`drawings/${topicId}/${compId}`).on('value', (sn) => {
+      // Als de gebruiker aan het tekenen is, overslaan om flikkering te voorkomen
+      if (drawingState[key].isDrawing) return;
+      const dataUrl = sn.val();
+      if (dataUrl) {
+        const img = new Image();
+        img.onload = () => {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          ctx.drawImage(img, 0, 0);
+        };
+        img.src = dataUrl;
+      } else {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
     });
-    const startDraw = (x, y) => { ctx.beginPath(); ctx.moveTo(x, y); drawingState[key].isDrawing = true; };
-    const moveDraw = (x, y) => { if (!drawingState[key].isDrawing) return; ctx.lineTo(x, y); ctx.stroke(); };
-    const endDraw = () => { drawingState[key].isDrawing = false; saveDrawing(topicId, compId); };
-    canvas.addEventListener('mousedown', (e) => { const r = canvas.getBoundingClientRect(); startDraw((e.clientX-r.left)*(canvas.width/r.width), (e.clientY-r.top)*(canvas.height/r.height)); });
-    canvas.addEventListener('mousemove', (e) => { if (!drawingState[key].isDrawing) return; const r = canvas.getBoundingClientRect(); moveDraw((e.clientX-r.left)*(canvas.width/r.width), (e.clientY-r.top)*(canvas.height/r.height)); });
-    canvas.addEventListener('mouseup', endDraw); canvas.addEventListener('mouseleave', endDraw);
-    canvas.addEventListener('touchstart', (e) => { e.preventDefault(); const t = e.touches[0]; const r = canvas.getBoundingClientRect(); startDraw((t.clientX-r.left)*(canvas.width/r.width), (t.clientY-r.top)*(canvas.height/r.height)); });
-    canvas.addEventListener('touchmove', (e) => { e.preventDefault(); if (!drawingState[key].isDrawing) return; const t = e.touches[0]; const r = canvas.getBoundingClientRect(); moveDraw((t.clientX-r.left)*(canvas.width/r.width), (t.clientY-r.top)*(canvas.height/r.height)); });
+
+    const startDraw = (x, y) => {
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      drawingState[key].isDrawing = true;
+    };
+    const moveDraw = (x, y) => {
+      if (!drawingState[key].isDrawing) return;
+      ctx.lineTo(x, y);
+      ctx.stroke();
+    };
+    const endDraw = () => {
+      drawingState[key].isDrawing = false;
+      saveDrawing(topicId, compId);
+    };
+
+    canvas.addEventListener('mousedown', (e) => {
+      const r = canvas.getBoundingClientRect();
+      startDraw((e.clientX - r.left) * (canvas.width / r.width), (e.clientY - r.top) * (canvas.height / r.height));
+    });
+    canvas.addEventListener('mousemove', (e) => {
+      if (!drawingState[key].isDrawing) return;
+      const r = canvas.getBoundingClientRect();
+      moveDraw((e.clientX - r.left) * (canvas.width / r.width), (e.clientY - r.top) * (canvas.height / r.height));
+    });
+    canvas.addEventListener('mouseup', endDraw);
+    canvas.addEventListener('mouseleave', endDraw);
+
+    canvas.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      const t = e.touches[0];
+      const r = canvas.getBoundingClientRect();
+      startDraw((t.clientX - r.left) * (canvas.width / r.width), (t.clientY - r.top) * (canvas.height / r.height));
+    });
+    canvas.addEventListener('touchmove', (e) => {
+      e.preventDefault();
+      if (!drawingState[key].isDrawing) return;
+      const t = e.touches[0];
+      const r = canvas.getBoundingClientRect();
+      moveDraw((t.clientX - r.left) * (canvas.width / r.width), (t.clientY - r.top) * (canvas.height / r.height));
+    });
     canvas.addEventListener('touchend', endDraw);
   }
-  function saveDrawing(topicId, compId) { const key = `${topicId}-${compId}`; const state = drawingState[key]; if (!state) return; db.ref(`drawings/${topicId}/${compId}`).set(state.canvas.toDataURL('image/png')); }
-  function clearDrawing(topicId, compId) { const key = `${topicId}-${compId}`; const state = drawingState[key]; if (!state) return; state.ctx.clearRect(0, 0, state.canvas.width, state.canvas.height); db.ref(`drawings/${topicId}/${compId}`).remove(); }
+
+  function saveDrawing(topicId, compId) {
+    const key = `${topicId}-${compId}`;
+    const state = drawingState[key];
+    if (!state) return;
+    // Opslaan in Firebase; de listener wordt getriggerd, maar we zijn klaar met tekenen dus die zal de update negeren (isDrawing=false)
+    db.ref(`drawings/${topicId}/${compId}`).set(state.canvas.toDataURL('image/png'));
+  }
+
+  function clearDrawing(topicId, compId) {
+    const key = `${topicId}-${compId}`;
+    const state = drawingState[key];
+    if (!state) return;
+    state.ctx.clearRect(0, 0, state.canvas.width, state.canvas.height);
+    db.ref(`drawings/${topicId}/${compId}`).remove();
+  }
 
   function loadAllFeeds() { /* done by listeners */ }
 
@@ -837,7 +893,6 @@
     });
   }
 
-  // Open modal om een nieuw onderwerp toe te voegen
   function openAddTopicModal() {
     editingTopicIndex = null;
     document.getElementById('topic-edit-title').textContent = 'Onderwerp toevoegen';
@@ -846,7 +901,6 @@
     document.getElementById('topic-edit-overlay').style.display = 'flex';
   }
 
-  // Open modal om een bestaand onderwerp te bewerken
   function openEditTopicModal(index) {
     editingTopicIndex = index;
     const topic = topics[index];
@@ -866,21 +920,18 @@
     const goals = document.getElementById('topic-edit-goals-input').value.trim();
     if (!title) { alert('Voer een titel in.'); return; }
     if (editingTopicIndex === null) {
-      // Nieuw onderwerp
       const newTopic = { id: 'topic_' + Date.now(), title: title, goals: goals };
       topics.push(newTopic);
       db.ref('topics').set(topics);
-      // Voeg leeg componenten‑array toe voor dit topic in draft & published
       db.ref(`draft/${newTopic.id}`).set([]);
       db.ref(`published/${newTopic.id}`).set([]);
     } else {
-      // Bewerk bestaand
       topics[editingTopicIndex].title = title;
       topics[editingTopicIndex].goals = goals;
       db.ref('topics').set(topics);
     }
     closeTopicEditModal();
-    renderTopicList(); // herlaad lijst in de modal
+    renderTopicList();
   }
 
   function deleteTopic(index) {
@@ -889,7 +940,6 @@
     const id = topic.id;
     topics.splice(index, 1);
     db.ref('topics').set(topics);
-    // Verwijder alle gerelateerde data
     db.ref(`draft/${id}`).remove();
     db.ref(`published/${id}`).remove();
     db.ref(`answers/${id}`).remove();
