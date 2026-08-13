@@ -128,31 +128,61 @@
       padding: 0 10px;
     }
     .accordion-panel.open {
-      max-height: 600px;
+      max-height: 1200px; /* verhoogd voor lessen */
       overflow-y: auto;
       padding: 10px 10px 20px 10px;
     }
 
-    /* Doelen weergave */
-    .lesson-goals {
+    /* LESSEN WEERGAVE */
+    .lesson-container {
+      margin-bottom: 20px;
       background: #f8fafc;
-      border-left: 4px solid #f7c948;
-      padding: 12px 16px;
       border-radius: 12px;
-      margin: 5px 0 15px 0;
-      white-space: pre-wrap;
-      font-size: 0.95rem;
+      padding: 12px 16px;
+      border: 1px solid #e2e8f0;
+    }
+    .lesson-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .lesson-header h4 {
+      margin: 0;
+      font-size: 1.1rem;
+      color: #0f172a;
+    }
+    .lesson-header .actions {
+      display: flex;
+      gap: 6px;
+    }
+    .lesson-header .actions button {
+      background: #e2e8f0;
+      border: none;
+      padding: 4px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.85rem;
       color: #1e293b;
+      transition: 0.2s;
     }
-    .lesson-goals strong {
-      color: #0a1e3f;
+    .lesson-header .actions button:hover { background: #cbd5e1; }
+    .lesson-header .actions .delete { color: #ef4444; }
+    .lesson-header .actions .delete:hover { background: #fee2e2; }
+    .lesson-goals {
+      margin: 8px 0 12px;
+      font-size: 0.95rem;
+      color: #475569;
+      white-space: pre-wrap;
+      border-left: 3px solid #f7c948;
+      padding-left: 12px;
     }
-
     .component-container {
       display: flex;
       flex-direction: column;
       gap: 14px;
-      margin-bottom: 20px;
+      margin: 10px 0;
     }
 
     /* COMPONENT ITEMS */
@@ -172,7 +202,7 @@
     .component-item .content { flex: 1; }
     .component-item .content p { line-height: 1.6; color: #334155; }
 
-    /* ACTIONS */
+    /* ACTIONS (voor componenten) */
     .component-item .actions { display: flex; gap: 6px; margin-top: 2px; align-items: center; }
     .component-item .actions button {
       background: #f1f5f9; border: none; cursor: pointer;
@@ -187,7 +217,7 @@
     }
     .component-item .actions .toggle.on { background: #86efac; color: #14532d; }
 
-    /* ADD AREA */
+    /* ADD AREA binnen een les */
     .add-component-area {
       display: flex;
       align-items: center;
@@ -248,31 +278,31 @@
     .file-preview a:hover { background: #e5b840; }
 
     /* MODALS */
-    .modal-overlay, .name-overlay, .topic-overlay, .topic-edit-overlay {
+    .modal-overlay, .name-overlay, .topic-overlay, .lesson-edit-overlay {
       position: fixed; top: 0; left: 0; right: 0; bottom: 0;
       background: rgba(10, 30, 63, 0.6); backdrop-filter: blur(6px);
       display: flex; justify-content: center; align-items: center; z-index: 2000;
     }
-    .modal, .name-modal, .topic-modal, .topic-edit-modal {
+    .modal, .name-modal, .topic-modal, .lesson-edit-modal {
       background: #ffffff; padding: 35px; border-radius: 28px; width: 90%; max-width: 600px;
       box-shadow: 0 25px 50px rgba(0,0,0,0.2); animation: slideUp 0.3s ease;
       border: 1px solid rgba(255,255,255,0.5);
     }
     @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-    .modal h3, .name-modal h3, .topic-modal h3, .topic-edit-modal h3 { margin-bottom: 20px; font-size: 1.4rem; color: #0f172a; }
-    .modal label, .name-modal label, .topic-modal label, .topic-edit-modal label { display: block; margin: 16px 0 6px; font-weight: 600; color: #334155; }
-    .modal input, .modal textarea, .name-modal input, .topic-modal input, .topic-edit-modal input, .topic-edit-modal textarea {
+    .modal h3, .name-modal h3, .topic-modal h3, .lesson-edit-modal h3 { margin-bottom: 20px; font-size: 1.4rem; color: #0f172a; }
+    .modal label, .name-modal label, .topic-modal label, .lesson-edit-modal label { display: block; margin: 16px 0 6px; font-weight: 600; color: #334155; }
+    .modal input, .modal textarea, .name-modal input, .topic-modal input, .lesson-edit-modal input, .lesson-edit-modal textarea {
       width: 100%; padding: 10px 14px; border: 1px solid #e2e8f0; border-radius: 12px; font-size: 1rem; background: #f8fafc; transition: 0.2s;
     }
-    .modal input:focus, .modal textarea:focus, .topic-edit-modal input:focus, .topic-edit-modal textarea:focus {
+    .modal input:focus, .modal textarea:focus, .lesson-edit-modal input:focus, .lesson-edit-modal textarea:focus {
       border-color: #f7c948; box-shadow: 0 0 0 3px rgba(247,201,72,0.2); background: #fff; outline: none;
     }
-    .modal .buttons, .topic-modal .buttons, .topic-edit-modal .buttons { display: flex; justify-content: flex-end; gap: 12px; margin-top: 25px; }
-    .modal .buttons button, .topic-modal .buttons button, .topic-edit-modal .buttons button { padding: 10px 28px; border: none; border-radius: 12px; font-weight: 600; cursor: pointer; transition: 0.2s; }
-    .modal .btn-cancel, .topic-modal .btn-cancel, .topic-edit-modal .btn-cancel { background: #f1f5f9; color: #475569; }
-    .modal .btn-cancel:hover, .topic-modal .btn-cancel:hover, .topic-edit-modal .btn-cancel:hover { background: #e2e8f0; }
-    .modal .btn-save, .topic-modal .btn-save, .topic-edit-modal .btn-save { background: #f7c948; color: #0a1e3f; }
-    .modal .btn-save:hover, .topic-modal .btn-save:hover, .topic-edit-modal .btn-save:hover { background: #e5b840; transform: translateY(-1px); }
+    .modal .buttons, .topic-modal .buttons, .lesson-edit-modal .buttons { display: flex; justify-content: flex-end; gap: 12px; margin-top: 25px; }
+    .modal .buttons button, .topic-modal .buttons button, .lesson-edit-modal .buttons button { padding: 10px 28px; border: none; border-radius: 12px; font-weight: 600; cursor: pointer; transition: 0.2s; }
+    .modal .btn-cancel, .topic-modal .btn-cancel, .lesson-edit-modal .btn-cancel { background: #f1f5f9; color: #475569; }
+    .modal .btn-cancel:hover, .topic-modal .btn-cancel:hover, .lesson-edit-modal .btn-cancel:hover { background: #e2e8f0; }
+    .modal .btn-save, .topic-modal .btn-save, .lesson-edit-modal .btn-save { background: #f7c948; color: #0a1e3f; }
+    .modal .btn-save:hover, .topic-modal .btn-save:hover, .lesson-edit-modal .btn-save:hover { background: #e5b840; transform: translateY(-1px); }
     .name-modal button { padding: 10px 28px; border: none; border-radius: 12px; font-weight: 600; cursor: pointer; background: #f7c948; color: #0a1e3f; }
     .name-modal button:hover { background: #e5b840; }
 
@@ -332,7 +362,6 @@
   <div class="header-actions" id="headerActions">
     <button id="switchModeBtn">🔄 Schakel naar docentmodus</button>
     <button id="fullscreenBtn" style="display:none;">⛶ Volledig scherm</button>
-    <button id="addLessonBtn" style="display:none;">➕ Nieuwe les</button>
     <button id="manageTopicsBtn" style="display:none;">📚 Beheer onderwerpen</button>
     <button id="publishBtn" style="display:none;">📤 Publiceer</button>
     <button id="resetBtn" style="display:none;">🔄 Reset alles</button>
@@ -353,7 +382,7 @@
   </div>
 </div>
 
-<!-- MODAL VOOR ONDERWERPEN BEHEER (overzicht) -->
+<!-- MODAL VOOR ONDERWERPEN BEHEER -->
 <div id="topic-overlay" class="topic-overlay" style="display:none;">
   <div class="topic-modal">
     <h3>📚 Beheer onderwerpen</h3>
@@ -367,17 +396,17 @@
   </div>
 </div>
 
-<!-- MODAL VOOR ONDERWERP TOEVOEGEN / BEWERKEN -->
-<div id="topic-edit-overlay" class="topic-edit-overlay" style="display:none;">
-  <div class="topic-edit-modal">
-    <h3 id="topic-edit-title">Onderwerp toevoegen</h3>
+<!-- MODAL VOOR LES TOEVOEGEN / BEWERKEN -->
+<div id="lesson-edit-overlay" class="lesson-edit-overlay" style="display:none;">
+  <div class="lesson-edit-modal">
+    <h3 id="lesson-edit-title">Les toevoegen</h3>
     <label>Titel</label>
-    <input type="text" id="topic-edit-title-input" placeholder="Titel van het onderwerp">
+    <input type="text" id="lesson-edit-title-input" placeholder="Titel van de les">
     <label>Lesdoelen</label>
-    <textarea id="topic-edit-goals-input" rows="4" placeholder="Wat zijn de doelen van deze les?"></textarea>
+    <textarea id="lesson-edit-goals-input" rows="4" placeholder="Wat zijn de doelen van deze les?"></textarea>
     <div class="buttons">
-      <button class="btn-cancel" onclick="closeTopicEditModal()">Annuleren</button>
-      <button class="btn-save" onclick="saveTopic()">Opslaan</button>
+      <button class="btn-cancel" onclick="closeLessonEditModal()">Annuleren</button>
+      <button class="btn-save" onclick="saveLesson()">Opslaan</button>
     </div>
   </div>
 </div>
@@ -408,7 +437,6 @@
   const publishBtn = document.getElementById('publishBtn');
   const resetBtn = document.getElementById('resetBtn');
   const fullscreenBtn = document.getElementById('fullscreenBtn');
-  const addLessonBtn = document.getElementById('addLessonBtn');
 
   if (isDocentMode) {
     modeIndicator.textContent = '👨‍🏫 Docent (bewerken)';
@@ -416,7 +444,6 @@
     manageTopicsBtn.style.display = 'inline-block';
     publishBtn.style.display = 'inline-block';
     resetBtn.style.display = 'inline-block';
-    addLessonBtn.style.display = 'inline-block';
     switchBtn.textContent = '👩‍🎓 Schakel naar studentenmodus';
     switchBtn.style.background = '#f7c948';
     switchBtn.style.color = '#0a1e3f';
@@ -427,7 +454,6 @@
     switchBtn.textContent = '🔄 Schakel naar docentmodus';
     switchBtn.style.background = '#f7c948';
     switchBtn.style.color = '#0a1e3f';
-    addLessonBtn.style.display = 'none';
     if (document.documentElement.requestFullscreen) {
       fullscreenBtn.style.display = 'inline-block';
     }
@@ -479,42 +505,57 @@
     }
   });
 
-  // ---------- STANDARD ONDERWERPEN (default) ----------
+  // ---------- DEFAULT DATA ----------
   function getDefaultTopics() {
     return [
-      { id: 'topic_1', title: '1. BTV op de politieacademie', goals: 'Kennismaken met de basis van BTV en het belang voor de politiepraktijk.' },
-      { id: 'topic_2', title: '2. Mutatie', goals: 'Leren wat een mutatie is en hoe je deze correct noteert.' },
-      { id: 'topic_3', title: '3. PV Aangifte', goals: 'De stappen van een proces‑verbaal van aangifte doorlopen en de aandachtspunten begrijpen.' },
-      { id: 'topic_4', title: '4. PV Bevindingen', goals: 'Inzicht krijgen in de opbouw en vereisten van een proces‑verbaal van bevindingen.' },
-      { id: 'topic_5', title: '5. Kwaliteitscheck 3F', goals: 'Je eigen verslaglegging kunnen evalueren aan de hand van de 3F‑criteria.' }
+      { id: 'topic_1', title: '1. BTV op de politieacademie' },
+      { id: 'topic_2', title: '2. Mutatie' },
+      { id: 'topic_3', title: '3. PV Aangifte' },
+      { id: 'topic_4', title: '4. PV Bevindingen' },
+      { id: 'topic_5', title: '5. Kwaliteitscheck 3F' }
     ];
   }
 
-  // ---------- DEFAULT DATA PER ONDERWERP ----------
-  function getDefaultComponents() {
+  function getDefaultLessons() {
     return {
       'topic_1': [
-        { id: 'comp_' + Date.now() + '_0', type: 'text', text: 'Inleiding BTV – de basis van politiewerk.', active: true }
+        { id: 'lesson_1_1', title: 'Les 1: Inleiding BTV', goals: 'Kennismaken met de basis van BTV en het belang voor de politiepraktijk.', components: [
+          { id: 'comp_' + Date.now() + '_0', type: 'text', text: 'Inleiding BTV – de basis van politiewerk.', active: true }
+        ]}
       ],
       'topic_2': [
-        { id: 'comp_' + Date.now() + '_1', type: 'text', text: 'Wat is een mutatie? Hoe noteer je correct?', active: true }
+        { id: 'lesson_2_1', title: 'Les 1: Mutatie', goals: 'Leren wat een mutatie is en hoe je deze correct noteert.', components: [
+          { id: 'comp_' + Date.now() + '_1', type: 'text', text: 'Wat is een mutatie? Hoe noteer je correct?', active: true }
+        ]}
       ],
       'topic_3': [
-        { id: 'comp_' + Date.now() + '_2', type: 'text', text: 'Proces‑verbaal van aangifte – stappen en aandachtspunten.', active: true }
+        { id: 'lesson_3_1', title: 'Les 1: PV Aangifte', goals: 'De stappen van een proces‑verbaal van aangifte doorlopen en de aandachtspunten begrijpen.', components: [
+          { id: 'comp_' + Date.now() + '_2', type: 'text', text: 'Proces‑verbaal van aangifte – stappen en aandachtspunten.', active: true }
+        ]}
       ],
       'topic_4': [
-        { id: 'comp_' + Date.now() + '_3', type: 'text', text: 'Proces‑verbaal van bevindingen – wat moet erin?', active: true }
+        { id: 'lesson_4_1', title: 'Les 1: PV Bevindingen', goals: 'Inzicht krijgen in de opbouw en vereisten van een proces‑verbaal van bevindingen.', components: [
+          { id: 'comp_' + Date.now() + '_3', type: 'text', text: 'Proces‑verbaal van bevindingen – wat moet erin?', active: true }
+        ]}
       ],
       'topic_5': [
-        { id: 'comp_' + Date.now() + '_4', type: 'text', text: 'Kwaliteitscheck 3F – evaluatie van je verslaglegging.', active: true }
+        { id: 'lesson_5_1', title: 'Les 1: Kwaliteitscheck 3F', goals: 'Je eigen verslaglegging kunnen evalueren aan de hand van de 3F‑criteria.', components: [
+          { id: 'comp_' + Date.now() + '_4', type: 'text', text: 'Kwaliteitscheck 3F – evaluatie van je verslaglegging.', active: true }
+        ]}
       ]
     };
   }
 
   // ---------- STATE ----------
-  let topics = [];              // array van {id, title, goals}
-  let data = {};               // componenten per topicId
-  let editingTopicIndex = null; // voor topic edit modal
+  let topics = [];              // array van {id, title}
+  let lessons = {};            // object: topicId -> array van {id, title, goals, components: [...]}
+  let editingTopicIndex = null;
+  let editingLessonTopicId = null;
+  let editingLessonIndex = null;
+  let currentTopicIdForComponent = null;
+  let currentLessonIdForComponent = null;
+  let currentComponentIndex = null;
+  let modalMode = 'add';
 
   // ---------- COMPONENT TYPES ----------
   const componentTypes = [
@@ -529,10 +570,10 @@
     { value: 'iframe', label: 'Iframe (externe pagina)' }
   ];
 
-  // ---------- LOAD TOPICS EN DATA ----------
+  // ---------- LOAD DATA ----------
   function loadData() {
     const topicsRef = db.ref('topics');
-    const dataRef = db.ref(isDocentMode ? 'draft' : 'published');
+    const lessonsRef = db.ref(isDocentMode ? 'draftLessons' : 'publishedLessons');
 
     topicsRef.on('value', (snapshot) => {
       let topicsVal = snapshot.val();
@@ -540,21 +581,22 @@
         const defaultTopics = getDefaultTopics();
         topicsRef.set(defaultTopics);
         topicsVal = defaultTopics;
-        const defaultData = getDefaultComponents();
-        dataRef.set(defaultData);
+        // Ook default lessen aanmaken
+        const defaultLessons = getDefaultLessons();
+        lessonsRef.set(defaultLessons);
       }
       topics = topicsVal;
       renderAccordion();
 
-      dataRef.on('value', (snap) => {
+      lessonsRef.on('value', (snap) => {
         const val = snap.val();
         if (val) {
-          data = val;
+          lessons = val;
         } else {
           const empty = {};
           topics.forEach(t => empty[t.id] = []);
-          dataRef.set(empty);
-          data = empty;
+          lessonsRef.set(empty);
+          lessons = empty;
         }
         renderAllComponents();
         loadAllFeeds();
@@ -573,17 +615,17 @@
       header.onclick = () => toggleAccordion(header, topic.id);
       const panel = document.createElement('div'); panel.className = 'accordion-panel'; panel.id = `panel-${topic.id}`;
       
-      const goalsDiv = document.createElement('div');
-      goalsDiv.className = 'lesson-goals';
-      goalsDiv.innerHTML = `<strong>🎯 Lesdoelen</strong><br>${escapeHtml(topic.goals || 'Geen doelen ingevoerd.')}`;
-      panel.appendChild(goalsDiv);
-
-      const compContainer = document.createElement('div'); compContainer.className = 'component-container'; compContainer.id = `components-${topic.id}`; panel.appendChild(compContainer);
+      // Lessen container
+      const lessonContainer = document.createElement('div');
+      lessonContainer.id = `lessons-${topic.id}`;
+      panel.appendChild(lessonContainer);
 
       if (isDocentMode) {
-        const addArea = document.createElement('div'); addArea.className = 'add-component-area';
-        addArea.innerHTML = `<select id="type-select-${topic.id}">${componentTypes.map(t => `<option value="${t.value}">${t.label}</option>`).join('')}</select><button onclick="openAddModal('${topic.id}')">➕ Toevoegen</button>`;
-        panel.appendChild(addArea);
+        // Knop om een les toe te voegen binnen dit onderwerp
+        const addLessonDiv = document.createElement('div');
+        addLessonDiv.style.marginTop = '15px';
+        addLessonDiv.innerHTML = `<button onclick="openAddLessonModal('${topic.id}')" style="padding:8px 16px; background:#f7c948; color:#0a1e3f; border:none; border-radius:12px; font-weight:600; cursor:pointer;">➕ Les toevoegen</button>`;
+        panel.appendChild(addLessonDiv);
       }
 
       item.appendChild(header); item.appendChild(panel); root.appendChild(item);
@@ -598,37 +640,81 @@
     if (!isOpen) { panel.classList.add('open'); header.classList.add('active'); }
   }
 
-  // ---------- RENDER COMPONENTS ----------
+  // ---------- RENDER LESSEN EN COMPONENTEN ----------
   function renderAllComponents() {
     topics.forEach(topic => {
-      const container = document.getElementById(`components-${topic.id}`);
+      const container = document.getElementById(`lessons-${topic.id}`);
       if (!container) return;
-      const components = data[topic.id] || [];
+      const topicLessons = lessons[topic.id] || [];
       container.innerHTML = '';
-      components.forEach((comp, index) => {
-        const item = document.createElement('div');
-        item.className = 'component-item' + (comp.active === false ? ' disabled' : '');
-        const contentDiv = document.createElement('div'); contentDiv.className = 'content'; contentDiv.id = `content-${comp.id}`;
-        renderComponentContent(contentDiv, comp, topic.id);
-        item.appendChild(contentDiv);
-
+      topicLessons.forEach((lesson, lessonIndex) => {
+        const lessonDiv = document.createElement('div');
+        lessonDiv.className = 'lesson-container';
+        
+        // Header
+        const headerDiv = document.createElement('div');
+        headerDiv.className = 'lesson-header';
+        headerDiv.innerHTML = `<h4>${escapeHtml(lesson.title)}</h4>`;
         if (isDocentMode) {
-          const actions = document.createElement('div'); actions.className = 'actions';
-          const toggleBtn = document.createElement('button'); toggleBtn.className = 'toggle' + (comp.active !== false ? ' on' : ''); toggleBtn.textContent = comp.active !== false ? 'Aan' : 'Uit'; toggleBtn.onclick = () => toggleComponent(topic.id, index);
-          actions.appendChild(toggleBtn);
-          const editBtn = document.createElement('button'); editBtn.innerHTML = '✎'; editBtn.onclick = () => openEditModal(topic.id, index);
-          const delBtn = document.createElement('button'); delBtn.innerHTML = '✕'; delBtn.className = 'delete'; delBtn.onclick = () => deleteComponent(topic.id, index);
-          actions.appendChild(editBtn); actions.appendChild(delBtn);
-          item.appendChild(actions);
+          const actions = document.createElement('div');
+          actions.className = 'actions';
+          actions.innerHTML = `
+            <button onclick="openEditLessonModal('${topic.id}', ${lessonIndex})">✎</button>
+            <button class="delete" onclick="deleteLesson('${topic.id}', ${lessonIndex})">✕</button>
+          `;
+          headerDiv.appendChild(actions);
+        }
+        lessonDiv.appendChild(headerDiv);
+
+        // Doelen
+        if (lesson.goals) {
+          const goalsDiv = document.createElement('div');
+          goalsDiv.className = 'lesson-goals';
+          goalsDiv.textContent = lesson.goals;
+          lessonDiv.appendChild(goalsDiv);
         }
 
-        container.appendChild(item);
+        // Componenten
+        const compContainer = document.createElement('div');
+        compContainer.className = 'component-container';
+        compContainer.id = `components-${topic.id}-${lesson.id}`;
+        const components = lesson.components || [];
+        components.forEach((comp, compIndex) => {
+          const item = document.createElement('div');
+          item.className = 'component-item' + (comp.active === false ? ' disabled' : '');
+          const contentDiv = document.createElement('div'); contentDiv.className = 'content'; contentDiv.id = `content-${comp.id}`;
+          renderComponentContent(contentDiv, comp, topic.id, lesson.id);
+          item.appendChild(contentDiv);
+
+          if (isDocentMode) {
+            const actions = document.createElement('div'); actions.className = 'actions';
+            const toggleBtn = document.createElement('button'); toggleBtn.className = 'toggle' + (comp.active !== false ? ' on' : ''); toggleBtn.textContent = comp.active !== false ? 'Aan' : 'Uit'; toggleBtn.onclick = () => toggleComponent(topic.id, lesson.id, compIndex);
+            actions.appendChild(toggleBtn);
+            const editBtn = document.createElement('button'); editBtn.innerHTML = '✎'; editBtn.onclick = () => openEditComponentModal(topic.id, lesson.id, compIndex);
+            const delBtn = document.createElement('button'); delBtn.innerHTML = '✕'; delBtn.className = 'delete'; delBtn.onclick = () => deleteComponent(topic.id, lesson.id, compIndex);
+            actions.appendChild(editBtn); actions.appendChild(delBtn);
+            item.appendChild(actions);
+          }
+
+          compContainer.appendChild(item);
+        });
+        lessonDiv.appendChild(compContainer);
+
+        // Toevoeggebied voor componenten (alleen docent)
+        if (isDocentMode) {
+          const addArea = document.createElement('div');
+          addArea.className = 'add-component-area';
+          addArea.innerHTML = `<select id="type-select-${topic.id}-${lesson.id}">${componentTypes.map(t => `<option value="${t.value}">${t.label}</option>`).join('')}</select><button onclick="openAddComponentModal('${topic.id}','${lesson.id}')">➕ Toevoegen</button>`;
+          lessonDiv.appendChild(addArea);
+        }
+
+        container.appendChild(lessonDiv);
       });
     });
   }
 
-  // ---------- RENDER CONTENT ----------
-  function renderComponentContent(container, comp, topicId) {
+  // ---------- RENDER COMPONENT CONTENT (ongewijzigd, maar nu met lessonId) ----------
+  function renderComponentContent(container, comp, topicId, lessonId) {
     container.innerHTML = '';
     switch(comp.type) {
       case 'text':
@@ -645,19 +731,19 @@
       case 'vraag':
         container.innerHTML = `
           <div><strong style="font-size:1.05rem;">${escapeHtml(comp.vraagText || 'Stel een vraag...')}</strong>
-            <div class="vraag-input"><input type="text" id="antwoord-input-${comp.id}" placeholder="Uw antwoord..."><button onclick="verzendAntwoord('${topicId}','${comp.id}')">Verzend</button></div>
+            <div class="vraag-input"><input type="text" id="antwoord-input-${comp.id}" placeholder="Uw antwoord..."><button onclick="verzendAntwoord('${topicId}','${lessonId}','${comp.id}')">Verzend</button></div>
             <div class="antwoord-lijst" id="antwoord-lijst-${comp.id}"><em>Antwoorden worden geladen...</em></div>
           </div>
         `;
-        listenToAnswers(topicId, comp.id);
+        listenToAnswers(topicId, lessonId, comp.id);
         break;
       case 'tekenbord':
-        container.innerHTML = `<div class="tekenbord-container"><canvas id="canvas-${comp.id}" width="600" height="400"></canvas><div class="tekenknoppen"><button onclick="clearDrawing('${topicId}','${comp.id}')">🗑️ Wissen</button><button onclick="saveDrawing('${topicId}','${comp.id}')">💾 Opslaan</button></div></div>`;
-        setTimeout(() => initDrawing(topicId, comp.id), 100);
+        container.innerHTML = `<div class="tekenbord-container"><canvas id="canvas-${comp.id}" width="600" height="400"></canvas><div class="tekenknoppen"><button onclick="clearDrawing('${topicId}','${lessonId}','${comp.id}')">🗑️ Wissen</button><button onclick="saveDrawing('${topicId}','${lessonId}','${comp.id}')">💾 Opslaan</button></div></div>`;
+        setTimeout(() => initDrawing(topicId, lessonId, comp.id), 100);
         break;
       case 'vorige-les':
-        container.innerHTML = `<div class="vorige-les-container"><div class="input-row" style="display:flex;gap:10px;flex-wrap:wrap;"><input type="text" id="vorige-les-input-${comp.id}" placeholder="Voeg een punt uit de vorige les toe..." style="flex:1;padding:10px 14px;border:1px solid #e2e8f0;border-radius:12px;"><button onclick="voegVorigeLesToe('${topicId}','${comp.id}')" style="padding:10px 20px;background:#f7c948;color:#0a1e3f;border:none;border-radius:12px;cursor:pointer;">➕ Toevoegen</button></div><div class="vorige-les-lijst" id="vorige-les-lijst-${comp.id}"><em>Punten worden geladen...</em></div></div>`;
-        listenToVorigeLes(topicId, comp.id);
+        container.innerHTML = `<div class="vorige-les-container"><div class="input-row" style="display:flex;gap:10px;flex-wrap:wrap;"><input type="text" id="vorige-les-input-${comp.id}" placeholder="Voeg een punt uit de vorige les toe..." style="flex:1;padding:10px 14px;border:1px solid #e2e8f0;border-radius:12px;"><button onclick="voegVorigeLesToe('${topicId}','${lessonId}','${comp.id}')" style="padding:10px 20px;background:#f7c948;color:#0a1e3f;border:none;border-radius:12px;cursor:pointer;">➕ Toevoegen</button></div><div class="vorige-les-lijst" id="vorige-les-lijst-${comp.id}"><em>Punten worden geladen...</em></div></div>`;
+        listenToVorigeLes(topicId, lessonId, comp.id);
         break;
       case 'itslearning':
         const resourceTitle = comp.resourceTitle || '';
@@ -713,17 +799,20 @@
     }
   }
 
-  // ---------- TOGGLE ----------
-  function toggleComponent(topicId, index) {
+  // ---------- TOGGLE COMPONENT ----------
+  function toggleComponent(topicId, lessonId, compIndex) {
     if (!isDocentMode) return;
-    const comp = data[topicId][index]; if (!comp) return;
+    const lesson = lessons[topicId]?.find(l => l.id === lessonId);
+    if (!lesson) return;
+    const comp = lesson.components[compIndex];
+    if (!comp) return;
     comp.active = comp.active !== false ? false : true;
-    db.ref(`draft/${topicId}/${index}`).update({ active: comp.active });
+    saveLessonComponents(topicId, lessonId);
   }
 
-  // ---------- LIVE FEEDS ----------
-  function listenToAnswers(topicId, compId) {
-    db.ref(`answers/${topicId}/${compId}`).on('value', (sn) => {
+  // ---------- LIVE FEEDS (aangepast met lessonId) ----------
+  function listenToAnswers(topicId, lessonId, compId) {
+    db.ref(`answers/${topicId}/${lessonId}/${compId}`).on('value', (sn) => {
       const val = sn.val(); const el = document.getElementById(`antwoord-lijst-${compId}`);
       if (!el) return;
       if (!val) { el.innerHTML = '<em style="color:#94a3b8;">Nog geen antwoorden.</em>'; return; }
@@ -732,15 +821,15 @@
       }); el.innerHTML = html;
     });
   }
-  function verzendAntwoord(topicId, compId) {
+  function verzendAntwoord(topicId, lessonId, compId) {
     const input = document.getElementById(`antwoord-input-${compId}`); if (!input) return;
     const txt = input.value.trim(); if (!txt) { alert('Voer een antwoord in.'); return; }
-    db.ref(`answers/${topicId}/${compId}`).push({ antwoord: txt, timestamp: Date.now() });
+    db.ref(`answers/${topicId}/${lessonId}/${compId}`).push({ antwoord: txt, timestamp: Date.now() });
     input.value = '';
   }
 
-  function listenToVorigeLes(topicId, compId) {
-    db.ref(`vorigeLes/${topicId}/${compId}`).on('value', (sn) => {
+  function listenToVorigeLes(topicId, lessonId, compId) {
+    db.ref(`vorigeLes/${topicId}/${lessonId}/${compId}`).on('value', (sn) => {
       const val = sn.val(); const el = document.getElementById(`vorige-les-lijst-${compId}`);
       if (!el) return;
       if (!val) { el.innerHTML = '<em style="color:#94a3b8;">Nog geen punten.</em>'; return; }
@@ -749,24 +838,23 @@
       }); el.innerHTML = html;
     });
   }
-  function voegVorigeLesToe(topicId, compId) {
+  function voegVorigeLesToe(topicId, lessonId, compId) {
     const input = document.getElementById(`vorige-les-input-${compId}`); if (!input) return;
     const txt = input.value.trim(); if (!txt) { alert('Voer een punt in.'); return; }
-    db.ref(`vorigeLes/${topicId}/${compId}`).push({ punt: txt, timestamp: Date.now() });
+    db.ref(`vorigeLes/${topicId}/${lessonId}/${compId}`).push({ punt: txt, timestamp: Date.now() });
     input.value = '';
   }
 
-  // ---------- TEKENBORD - REALTIME SYNCHRONISATIE ----------
+  // ---------- TEKENBORD (aangepast met lessonId) ----------
   let drawingState = {};
-
-  function initDrawing(topicId, compId) {
+  function initDrawing(topicId, lessonId, compId) {
     const canvas = document.getElementById(`canvas-${compId}`);
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
-    const key = `${topicId}-${compId}`;
+    const key = `${topicId}-${lessonId}-${compId}`;
     drawingState[key] = { canvas, ctx, isDrawing: false };
 
-    db.ref(`drawings/${topicId}/${compId}`).on('value', (sn) => {
+    db.ref(`drawings/${topicId}/${lessonId}/${compId}`).on('value', (sn) => {
       if (drawingState[key].isDrawing) return;
       const dataUrl = sn.val();
       if (dataUrl) {
@@ -793,7 +881,7 @@
     };
     const endDraw = () => {
       drawingState[key].isDrawing = false;
-      saveDrawing(topicId, compId);
+      saveDrawing(topicId, lessonId, compId);
     };
 
     canvas.addEventListener('mousedown', (e) => {
@@ -824,32 +912,32 @@
     canvas.addEventListener('touchend', endDraw);
   }
 
-  function saveDrawing(topicId, compId) {
-    const key = `${topicId}-${compId}`;
+  function saveDrawing(topicId, lessonId, compId) {
+    const key = `${topicId}-${lessonId}-${compId}`;
     const state = drawingState[key];
     if (!state) return;
-    db.ref(`drawings/${topicId}/${compId}`).set(state.canvas.toDataURL('image/png'));
+    db.ref(`drawings/${topicId}/${lessonId}/${compId}`).set(state.canvas.toDataURL('image/png'));
   }
 
-  function clearDrawing(topicId, compId) {
-    const key = `${topicId}-${compId}`;
+  function clearDrawing(topicId, lessonId, compId) {
+    const key = `${topicId}-${lessonId}-${compId}`;
     const state = drawingState[key];
     if (!state) return;
     state.ctx.clearRect(0, 0, state.canvas.width, state.canvas.height);
-    db.ref(`drawings/${topicId}/${compId}`).remove();
+    db.ref(`drawings/${topicId}/${lessonId}/${compId}`).remove();
   }
 
   function loadAllFeeds() { /* done by listeners */ }
 
-  // ---------- BESTANDSUPLOAD ----------
-  function uploadFile(file, topicId, compId) {
+  // ---------- BESTANDSUPLOAD (ongewijzigd, maar met lessonId in path) ----------
+  function uploadFile(file, topicId, lessonId, compId) {
     return new Promise((resolve, reject) => {
       if (!file) reject('Geen bestand geselecteerd.');
       if (file.size > 10 * 1024 * 1024) {
         reject('Bestand is groter dan 10 MB.');
         return;
       }
-      const storageRef = storage.ref(`uploads/${topicId}/${compId}/${file.name}`);
+      const storageRef = storage.ref(`uploads/${topicId}/${lessonId}/${compId}/${file.name}`);
       const uploadTask = storageRef.put(file);
       uploadTask.on('state_changed',
         (snapshot) => {
@@ -869,22 +957,30 @@
   }
 
   // ---------- MODAL FUNCTIONS (componenten) ----------
-  function openAddModal(topicId) {
+  function openAddComponentModal(topicId, lessonId) {
     if (!isDocentMode) return;
-    currentTopicId = topicId; currentComponentId = null; modalMode = 'add';
-    const type = document.getElementById(`type-select-${topicId}`).value;
-    openModalForType(type, null);
-  }
-  function openEditModal(topicId, index) {
-    if (!isDocentMode) return;
-    currentTopicId = topicId; currentComponentId = index; modalMode = 'edit';
-    const comp = data[topicId][index]; if (!comp) return;
-    openModalForType(comp.type, comp);
+    currentTopicIdForComponent = topicId;
+    currentLessonIdForComponent = lessonId;
+    currentComponentIndex = null;
+    modalMode = 'add';
+    const type = document.getElementById(`type-select-${topicId}-${lessonId}`).value;
+    openComponentModalForType(type, null);
   }
 
-  let currentTopicId = null, currentComponentId = null, modalMode = 'add';
+  function openEditComponentModal(topicId, lessonId, compIndex) {
+    if (!isDocentMode) return;
+    currentTopicIdForComponent = topicId;
+    currentLessonIdForComponent = lessonId;
+    currentComponentIndex = compIndex;
+    modalMode = 'edit';
+    const lesson = lessons[topicId]?.find(l => l.id === lessonId);
+    if (!lesson) return;
+    const comp = lesson.components[compIndex];
+    if (!comp) return;
+    openComponentModalForType(comp.type, comp);
+  }
 
-  function openModalForType(type, existing) {
+  function openComponentModalForType(type, existing) {
     const overlay = document.getElementById('modal-overlay'); const title = document.getElementById('modal-title'); const form = document.getElementById('modal-form');
     title.textContent = modalMode === 'add' ? `Voeg ${componentTypes.find(t=>t.value===type)?.label || type} toe` : 'Bewerk component';
     let html = `<input type="hidden" id="modal-type" value="${type}">`;
@@ -991,10 +1087,10 @@
           const saveBtn = document.querySelector('#modal-overlay .btn-save');
           saveBtn.disabled = true;
           saveBtn.textContent = 'Uploaden...';
-          uploadFile(file, currentTopicId, currentComponentId || 'new').then(downloadURL => {
+          uploadFile(file, currentTopicIdForComponent, currentLessonIdForComponent, currentComponentIndex || 'new').then(downloadURL => {
             newComp.fileURL = downloadURL;
             newComp.fileName = file.name;
-            finishSave(newComp);
+            finishSaveComponent(newComp);
           }).catch(error => {
             alert('Fout bij uploaden: ' + error.message);
             saveBtn.disabled = false;
@@ -1002,7 +1098,7 @@
           });
           return;
         } else if (modalMode === 'edit' && document.getElementById('modal-file').files.length === 0) {
-          const existingComp = data[currentTopicId][currentComponentId];
+          const existingComp = lessons[currentTopicIdForComponent]?.find(l => l.id === currentLessonIdForComponent)?.components[currentComponentIndex];
           newComp.fileURL = existingComp.fileURL;
           newComp.fileName = existingComp.fileName;
         } else {
@@ -1015,37 +1111,139 @@
         break;
       default: newComp = { type };
     }
-    finishSave(newComp);
+    finishSaveComponent(newComp);
   }
 
-  function finishSave(newComp) {
+  function finishSaveComponent(newComp) {
     newComp.active = document.getElementById('modal-active').checked;
     if (!newComp.id) newComp.id = 'comp_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6);
-    const topicId = currentTopicId; const list = data[topicId] || [];
-    if (modalMode === 'add') list.push(newComp); else { const idx = currentComponentId; if (idx !== null && idx < list.length) { newComp.id = list[idx].id; list[idx] = newComp; } }
-    data[topicId] = list;
-    db.ref(`draft/${topicId}`).set(list);
+    const topicId = currentTopicIdForComponent;
+    const lessonId = currentLessonIdForComponent;
+    const lesson = lessons[topicId]?.find(l => l.id === lessonId);
+    if (!lesson) return;
+    if (modalMode === 'add') {
+      lesson.components.push(newComp);
+    } else {
+      const idx = currentComponentIndex;
+      if (idx !== null && idx < lesson.components.length) {
+        newComp.id = lesson.components[idx].id;
+        lesson.components[idx] = newComp;
+      }
+    }
+    saveLessonComponents(topicId, lessonId);
     const saveBtn = document.querySelector('#modal-overlay .btn-save');
     if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Opslaan'; }
     closeModal();
   }
 
-  function deleteComponent(topicId, index) {
+  function saveLessonComponents(topicId, lessonId) {
+    const lesson = lessons[topicId]?.find(l => l.id === lessonId);
+    if (!lesson) return;
+    const dataRef = db.ref(isDocentMode ? 'draftLessons' : 'publishedLessons');
+    // Update alleen deze les
+    const lessonRef = dataRef.child(topicId);
+    // We moeten de hele array voor dit topic opslaan, maar we kunnen ook alleen deze les bijwerken.
+    // Omdat we de hele array in memory hebben, kunnen we de hele topic setten.
+    const topicLessons = lessons[topicId];
+    const updateObj = {};
+    updateObj[topicId] = topicLessons;
+    dataRef.update(updateObj);
+  }
+
+  function deleteComponent(topicId, lessonId, compIndex) {
     if (!isDocentMode) return;
     if (!confirm('Weet je zeker dat je dit component wilt verwijderen?')) return;
-    const list = data[topicId] || []; const comp = list[index];
+    const lesson = lessons[topicId]?.find(l => l.id === lessonId);
+    if (!lesson) return;
+    const comp = lesson.components[compIndex];
     if (comp) {
-      if (comp.type === 'vraag') db.ref(`answers/${topicId}/${comp.id}`).remove();
-      if (comp.type === 'tekenbord') db.ref(`drawings/${topicId}/${comp.id}`).remove();
-      if (comp.type === 'vorige-les') db.ref(`vorigeLes/${topicId}/${comp.id}`).remove();
+      if (comp.type === 'vraag') db.ref(`answers/${topicId}/${lessonId}/${comp.id}`).remove();
+      if (comp.type === 'tekenbord') db.ref(`drawings/${topicId}/${lessonId}/${comp.id}`).remove();
+      if (comp.type === 'vorige-les') db.ref(`vorigeLes/${topicId}/${lessonId}/${comp.id}`).remove();
       if (comp.type === 'file' && comp.fileURL) {
         const storageRef = storage.refFromURL(comp.fileURL);
         storageRef.delete().catch(err => console.warn('Kon bestand niet verwijderen:', err));
       }
     }
-    list.splice(index, 1);
-    data[topicId] = list;
-    db.ref(`draft/${topicId}`).set(list);
+    lesson.components.splice(compIndex, 1);
+    saveLessonComponents(topicId, lessonId);
+  }
+
+  // ---------- LESSEN BEHEER ----------
+  function openAddLessonModal(topicId) {
+    editingLessonTopicId = topicId;
+    editingLessonIndex = null;
+    document.getElementById('lesson-edit-title').textContent = 'Les toevoegen';
+    document.getElementById('lesson-edit-title-input').value = '';
+    document.getElementById('lesson-edit-goals-input').value = '';
+    document.getElementById('lesson-edit-overlay').style.display = 'flex';
+  }
+
+  function openEditLessonModal(topicId, lessonIndex) {
+    editingLessonTopicId = topicId;
+    editingLessonIndex = lessonIndex;
+    const lesson = lessons[topicId][lessonIndex];
+    document.getElementById('lesson-edit-title').textContent = 'Les bewerken';
+    document.getElementById('lesson-edit-title-input').value = lesson.title;
+    document.getElementById('lesson-edit-goals-input').value = lesson.goals || '';
+    document.getElementById('lesson-edit-overlay').style.display = 'flex';
+  }
+
+  function closeLessonEditModal() {
+    document.getElementById('lesson-edit-overlay').style.display = 'none';
+    editingLessonTopicId = null;
+    editingLessonIndex = null;
+  }
+
+  function saveLesson() {
+    const title = document.getElementById('lesson-edit-title-input').value.trim();
+    const goals = document.getElementById('lesson-edit-goals-input').value.trim();
+    if (!title) { alert('Voer een titel in.'); return; }
+    const topicId = editingLessonTopicId;
+    if (!topicId) return;
+    if (editingLessonIndex === null) {
+      // Nieuwe les
+      const newLesson = {
+        id: 'lesson_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6),
+        title: title,
+        goals: goals,
+        components: []
+      };
+      if (!lessons[topicId]) lessons[topicId] = [];
+      lessons[topicId].push(newLesson);
+    } else {
+      // Bewerk bestaande
+      const lesson = lessons[topicId][editingLessonIndex];
+      lesson.title = title;
+      lesson.goals = goals;
+    }
+    // Opslaan in Firebase
+    const dataRef = db.ref(isDocentMode ? 'draftLessons' : 'publishedLessons');
+    const updateObj = {};
+    updateObj[topicId] = lessons[topicId];
+    dataRef.update(updateObj);
+    closeLessonEditModal();
+  }
+
+  function deleteLesson(topicId, lessonIndex) {
+    if (!confirm('Weet je zeker dat je deze les wilt verwijderen? Alle bijbehorende componenten en data gaan verloren.')) return;
+    const lesson = lessons[topicId][lessonIndex];
+    if (!lesson) return;
+    // Verwijder gerelateerde data
+    lesson.components.forEach(comp => {
+      if (comp.type === 'vraag') db.ref(`answers/${topicId}/${lesson.id}/${comp.id}`).remove();
+      if (comp.type === 'tekenbord') db.ref(`drawings/${topicId}/${lesson.id}/${comp.id}`).remove();
+      if (comp.type === 'vorige-les') db.ref(`vorigeLes/${topicId}/${lesson.id}/${comp.id}`).remove();
+      if (comp.type === 'file' && comp.fileURL) {
+        const storageRef = storage.refFromURL(comp.fileURL);
+        storageRef.delete().catch(err => console.warn('Kon bestand niet verwijderen:', err));
+      }
+    });
+    lessons[topicId].splice(lessonIndex, 1);
+    const dataRef = db.ref(isDocentMode ? 'draftLessons' : 'publishedLessons');
+    const updateObj = {};
+    updateObj[topicId] = lessons[topicId];
+    dataRef.update(updateObj);
   }
 
   // ---------- ONDERWERPEN BEHEER ----------
@@ -1071,13 +1269,9 @@
     });
   }
 
-  addLessonBtn.addEventListener('click', function() {
-    openAddTopicModal();
-  });
-
   function openAddTopicModal() {
     editingTopicIndex = null;
-    document.getElementById('topic-edit-title').textContent = 'Nieuwe les toevoegen';
+    document.getElementById('topic-edit-title').textContent = 'Onderwerp toevoegen';
     document.getElementById('topic-edit-title-input').value = '';
     document.getElementById('topic-edit-goals-input').value = '';
     document.getElementById('topic-edit-overlay').style.display = 'flex';
@@ -1086,9 +1280,9 @@
   function openEditTopicModal(index) {
     editingTopicIndex = index;
     const topic = topics[index];
-    document.getElementById('topic-edit-title').textContent = 'Les bewerken';
+    document.getElementById('topic-edit-title').textContent = 'Onderwerp bewerken';
     document.getElementById('topic-edit-title-input').value = topic.title;
-    document.getElementById('topic-edit-goals-input').value = topic.goals || '';
+    document.getElementById('topic-edit-goals-input').value = '';
     document.getElementById('topic-edit-overlay').style.display = 'flex';
   }
 
@@ -1099,17 +1293,18 @@
 
   function saveTopic() {
     const title = document.getElementById('topic-edit-title-input').value.trim();
-    const goals = document.getElementById('topic-edit-goals-input').value.trim();
     if (!title) { alert('Voer een titel in.'); return; }
     if (editingTopicIndex === null) {
-      const newTopic = { id: 'topic_' + Date.now(), title: title, goals: goals };
+      const newTopic = { id: 'topic_' + Date.now(), title: title };
       topics.push(newTopic);
       db.ref('topics').set(topics);
-      db.ref(`draft/${newTopic.id}`).set([]);
-      db.ref(`published/${newTopic.id}`).set([]);
+      // Lege lessen array aanmaken
+      const dataRef = db.ref(isDocentMode ? 'draftLessons' : 'publishedLessons');
+      const updateObj = {};
+      updateObj[newTopic.id] = [];
+      dataRef.update(updateObj);
     } else {
       topics[editingTopicIndex].title = title;
-      topics[editingTopicIndex].goals = goals;
       db.ref('topics').set(topics);
     }
     closeTopicEditModal();
@@ -1118,12 +1313,14 @@
 
   function deleteTopic(index) {
     const topic = topics[index];
-    if (!confirm(`Weet je zeker dat je het onderwerp "${topic.title}" wilt verwijderen? Alle bijbehorende componenten en data gaan verloren.`)) return;
+    if (!confirm(`Weet je zeker dat je het onderwerp "${topic.title}" wilt verwijderen? Alle bijbehorende lessen en data gaan verloren.`)) return;
     const id = topic.id;
     topics.splice(index, 1);
     db.ref('topics').set(topics);
-    db.ref(`draft/${id}`).remove();
-    db.ref(`published/${id}`).remove();
+    // Verwijder alle lessen en gerelateerde data
+    const dataRef = db.ref(isDocentMode ? 'draftLessons' : 'publishedLessons');
+    dataRef.child(id).remove();
+    // Verwijder ook feeds
     db.ref(`answers/${id}`).remove();
     db.ref(`drawings/${id}`).remove();
     db.ref(`vorigeLes/${id}`).remove();
@@ -1138,15 +1335,16 @@
   document.getElementById('publishBtn').addEventListener('click', function() {
     if (!isDocentMode) return;
     if (!confirm('Weet je zeker dat je de huidige draft wilt publiceren naar de studenten?')) return;
-    db.ref('draft').once('value').then(snapshot => {
-      const draftData = snapshot.val();
-      if (draftData) {
-        db.ref('published').set(draftData);
-        alert('✅ Gepubliceerd! Studenten zien nu de bijgewerkte versie.');
-      } else {
-        alert('Er is geen draft om te publiceren.');
-      }
+    // Publiceer zowel topics als lessen
+    db.ref('topics').once('value').then(snapshot => {
+      const topicsData = snapshot.val();
+      db.ref('publishedTopics').set(topicsData);
     });
+    db.ref('draftLessons').once('value').then(snapshot => {
+      const lessonsData = snapshot.val();
+      db.ref('publishedLessons').set(lessonsData);
+    });
+    alert('✅ Gepubliceerd! Studenten zien nu de bijgewerkte versie.');
   });
 
   // ---------- RESET ----------
@@ -1158,9 +1356,9 @@
     db.ref('vorigeLes').remove();
     const defaultTopics = getDefaultTopics();
     db.ref('topics').set(defaultTopics);
-    const defaultData = getDefaultComponents();
-    db.ref('draft').set(defaultData);
-    db.ref('published').set(defaultData);
+    const defaultLessons = getDefaultLessons();
+    db.ref('draftLessons').set(defaultLessons);
+    db.ref('publishedLessons').set(defaultLessons);
   });
 
   // ---------- INIT ----------
