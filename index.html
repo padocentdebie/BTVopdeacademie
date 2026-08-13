@@ -67,6 +67,8 @@
     #resetBtn:hover { background: #f8b8b8; transform: translateY(-2px); }
     #manageTopicsBtn { background: #c5d9f7; color: #1a4b8c; }
     #manageTopicsBtn:hover { background: #b0c9f2; transform: translateY(-2px); }
+    #addLessonBtn { background: #f7c948; color: #0a1e3f; }
+    #addLessonBtn:hover { background: #e5b840; transform: translateY(-2px); }
     /* Fullscreen knop */
     #fullscreenBtn {
       background: #e2e8f0;
@@ -308,6 +310,7 @@
   <div class="header-actions" id="headerActions">
     <button id="switchModeBtn">🔄 Schakel naar docentmodus</button>
     <button id="fullscreenBtn" style="display:none;">⛶ Volledig scherm</button>
+    <button id="addLessonBtn" style="display:none;">➕ Nieuwe les</button>
     <button id="manageTopicsBtn" style="display:none;">📚 Beheer onderwerpen</button>
     <button id="publishBtn" style="display:none;">📤 Publiceer</button>
     <button id="resetBtn" style="display:none;">🔄 Reset alles</button>
@@ -382,6 +385,7 @@
   const publishBtn = document.getElementById('publishBtn');
   const resetBtn = document.getElementById('resetBtn');
   const fullscreenBtn = document.getElementById('fullscreenBtn');
+  const addLessonBtn = document.getElementById('addLessonBtn');
 
   if (isDocentMode) {
     modeIndicator.textContent = '👨‍🏫 Docent (bewerken)';
@@ -389,6 +393,7 @@
     manageTopicsBtn.style.display = 'inline-block';
     publishBtn.style.display = 'inline-block';
     resetBtn.style.display = 'inline-block';
+    addLessonBtn.style.display = 'inline-block';
     switchBtn.textContent = '👩‍🎓 Schakel naar studentenmodus';
     switchBtn.style.background = '#f7c948';
     switchBtn.style.color = '#0a1e3f';
@@ -399,6 +404,7 @@
     switchBtn.textContent = '🔄 Schakel naar docentmodus';
     switchBtn.style.background = '#f7c948';
     switchBtn.style.color = '#0a1e3f';
+    addLessonBtn.style.display = 'none';
     if (document.documentElement.requestFullscreen) {
       fullscreenBtn.style.display = 'inline-block';
     }
@@ -763,7 +769,6 @@
     const key = `${topicId}-${compId}`;
     const state = drawingState[key];
     if (!state) return;
-    // Opslaan in Firebase; de listener wordt getriggerd, maar we zijn klaar met tekenen dus die zal de update negeren (isDrawing=false)
     db.ref(`drawings/${topicId}/${compId}`).set(state.canvas.toDataURL('image/png'));
   }
 
@@ -893,9 +898,14 @@
     });
   }
 
+  // ---------- NIEUWE LES KNOP (direct aanmaken) ----------
+  addLessonBtn.addEventListener('click', function() {
+    openAddTopicModal();
+  });
+
   function openAddTopicModal() {
     editingTopicIndex = null;
-    document.getElementById('topic-edit-title').textContent = 'Onderwerp toevoegen';
+    document.getElementById('topic-edit-title').textContent = 'Nieuwe les toevoegen';
     document.getElementById('topic-edit-title-input').value = '';
     document.getElementById('topic-edit-goals-input').value = '';
     document.getElementById('topic-edit-overlay').style.display = 'flex';
@@ -904,7 +914,7 @@
   function openEditTopicModal(index) {
     editingTopicIndex = index;
     const topic = topics[index];
-    document.getElementById('topic-edit-title').textContent = 'Onderwerp bewerken';
+    document.getElementById('topic-edit-title').textContent = 'Les bewerken';
     document.getElementById('topic-edit-title-input').value = topic.title;
     document.getElementById('topic-edit-goals-input').value = topic.goals || '';
     document.getElementById('topic-edit-overlay').style.display = 'flex';
