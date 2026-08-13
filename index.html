@@ -67,6 +67,15 @@
     #resetBtn:hover { background: #f8b8b8; transform: translateY(-2px); }
     #manageTopicsBtn { background: #c5d9f7; color: #1a4b8c; }
     #manageTopicsBtn:hover { background: #b0c9f2; transform: translateY(-2px); }
+    /* Fullscreen knop */
+    #fullscreenBtn {
+      background: #e2e8f0;
+      color: #0a1e3f;
+    }
+    #fullscreenBtn:hover {
+      background: #cbd5e1;
+      transform: translateY(-2px);
+    }
 
     .mode-indicator {
       display: inline-block;
@@ -298,6 +307,7 @@
 
   <div class="header-actions" id="headerActions">
     <button id="switchModeBtn">🔄 Schakel naar docentmodus</button>
+    <button id="fullscreenBtn" style="display:none;">⛶ Volledig scherm</button>
     <button id="manageTopicsBtn" style="display:none;">📚 Beheer onderwerpen</button>
     <button id="publishBtn" style="display:none;">📤 Publiceer</button>
     <button id="resetBtn" style="display:none;">🔄 Reset alles</button>
@@ -371,6 +381,7 @@
   const manageTopicsBtn = document.getElementById('manageTopicsBtn');
   const publishBtn = document.getElementById('publishBtn');
   const resetBtn = document.getElementById('resetBtn');
+  const fullscreenBtn = document.getElementById('fullscreenBtn');
 
   if (isDocentMode) {
     modeIndicator.textContent = '👨‍🏫 Docent (bewerken)';
@@ -381,13 +392,39 @@
     switchBtn.textContent = '👩‍🎓 Schakel naar studentenmodus';
     switchBtn.style.background = '#f7c948';
     switchBtn.style.color = '#0a1e3f';
+    // Fullscreen knop verbergen voor docent
+    fullscreenBtn.style.display = 'none';
   } else {
     modeIndicator.textContent = '👩‍🎓 Student (bekijken)';
     modeIndicator.className = 'mode-indicator student';
     switchBtn.textContent = '🔄 Schakel naar docentmodus';
     switchBtn.style.background = '#f7c948';
     switchBtn.style.color = '#0a1e3f';
+    // Fullscreen knop tonen als browser het ondersteunt
+    if (document.documentElement.requestFullscreen) {
+      fullscreenBtn.style.display = 'inline-block';
+    }
   }
+
+  // ---------- FULLSCREEN KNOP ----------
+  fullscreenBtn.addEventListener('click', function() {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch(err => {
+        console.warn('Fullscreen mislukt:', err);
+      });
+    } else {
+      document.exitFullscreen();
+    }
+  });
+
+  // Update knoptekst bij fullscreen change
+  document.addEventListener('fullscreenchange', function() {
+    if (document.fullscreenElement) {
+      fullscreenBtn.textContent = '⛶ Verlaat volledig scherm';
+    } else {
+      fullscreenBtn.textContent = '⛶ Volledig scherm';
+    }
+  });
 
   // ---------- SCHAKELKNOP ----------
   switchBtn.addEventListener('click', function() {
