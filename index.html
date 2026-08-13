@@ -713,7 +713,7 @@
     });
   }
 
-  // ---------- RENDER COMPONENT CONTENT (ongewijzigd, maar nu met lessonId) ----------
+  // ---------- RENDER COMPONENT CONTENT ----------
   function renderComponentContent(container, comp, topicId, lessonId) {
     container.innerHTML = '';
     switch(comp.type) {
@@ -810,7 +810,7 @@
     saveLessonComponents(topicId, lessonId);
   }
 
-  // ---------- LIVE FEEDS (aangepast met lessonId) ----------
+  // ---------- LIVE FEEDS ----------
   function listenToAnswers(topicId, lessonId, compId) {
     db.ref(`answers/${topicId}/${lessonId}/${compId}`).on('value', (sn) => {
       const val = sn.val(); const el = document.getElementById(`antwoord-lijst-${compId}`);
@@ -845,7 +845,7 @@
     input.value = '';
   }
 
-  // ---------- TEKENBORD (aangepast met lessonId) ----------
+  // ---------- TEKENBORD ----------
   let drawingState = {};
   function initDrawing(topicId, lessonId, compId) {
     const canvas = document.getElementById(`canvas-${compId}`);
@@ -929,7 +929,7 @@
 
   function loadAllFeeds() { /* done by listeners */ }
 
-  // ---------- BESTANDSUPLOAD (ongewijzigd, maar met lessonId in path) ----------
+  // ---------- BESTANDSUPLOAD ----------
   function uploadFile(file, topicId, lessonId, compId) {
     return new Promise((resolve, reject) => {
       if (!file) reject('Geen bestand geselecteerd.');
@@ -1087,20 +1087,22 @@
           const saveBtn = document.querySelector('#modal-overlay .btn-save');
           saveBtn.disabled = true;
           saveBtn.textContent = 'Uploaden...';
-          uploadFile(file, currentTopicIdForComponent, currentLessonIdForComponent, currentComponentIndex || 'new').then(downloadURL => {
-            newComp.fileURL = downloadURL;
-            newComp.fileName = file.name;
-            finishSaveComponent(newComp);
-          }).catch(error => {
-            alert('Fout bij uploaden: ' + error.message);
-            saveBtn.disabled = false;
-            saveBtn.textContent = 'Opslaan';
-          });
+          uploadFile(file, currentTopicIdForComponent, currentLessonIdForComponent, currentComponentIndex || 'new')
+            .then(downloadURL => {
+              newComp.fileURL = downloadURL;
+              newComp.fileName = file.name;
+              finishSaveComponent(newComp);
+            })
+            .catch(error => {
+              alert('Fout bij uploaden: ' + error.message);
+              saveBtn.disabled = false;
+              saveBtn.textContent = 'Opslaan';
+            });
           return;
         } else if (modalMode === 'edit' && document.getElementById('modal-file').files.length === 0) {
           const existingComp = lessons[currentTopicIdForComponent]?.find(l => l.id === currentLessonIdForComponent)?.components[currentComponentIndex];
-          newComp.fileURL = existingComp.fileURL;
-          newComp.fileName = existingComp.fileName;
+          newComp.fileURL = existingComp?.fileURL || '';
+          newComp.fileName = existingComp?.fileName || '';
         } else {
           alert('Selecteer een bestand.');
           return;
@@ -1140,13 +1142,8 @@
     const lesson = lessons[topicId]?.find(l => l.id === lessonId);
     if (!lesson) return;
     const dataRef = db.ref(isDocentMode ? 'draftLessons' : 'publishedLessons');
-    // Update alleen deze les
-    const lessonRef = dataRef.child(topicId);
-    // We moeten de hele array voor dit topic opslaan, maar we kunnen ook alleen deze les bijwerken.
-    // Omdat we de hele array in memory hebben, kunnen we de hele topic setten.
-    const topicLessons = lessons[topicId];
     const updateObj = {};
-    updateObj[topicId] = topicLessons;
+    updateObj[topicId] = lessons[topicId];
     dataRef.update(updateObj);
   }
 
@@ -1221,8 +1218,14 @@
     const dataRef = db.ref(isDocentMode ? 'draftLessons' : 'publishedLessons');
     const updateObj = {};
     updateObj[topicId] = lessons[topicId];
-    dataRef.update(updateObj);
-    closeLessonEditModal();
+    dataRef.update(updateObj)
+      .then(() => {
+        closeLessonEditModal();
+      })
+      .catch((error) => {
+        console.error('Fout bij opslaan:', error);
+        alert('Er is een fout opgetreden bij het opslaan. Probeer het opnieuw.');
+      });
   }
 
   function deleteLesson(topicId, lessonIndex) {
