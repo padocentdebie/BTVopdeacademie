@@ -120,6 +120,22 @@
       overflow-y: auto;
       padding: 10px 10px 20px 10px;
     }
+
+    /* Doelen weergave */
+    .lesson-goals {
+      background: #f8fafc;
+      border-left: 4px solid #f7c948;
+      padding: 12px 16px;
+      border-radius: 12px;
+      margin: 5px 0 15px 0;
+      white-space: pre-wrap;
+      font-size: 0.95rem;
+      color: #1e293b;
+    }
+    .lesson-goals strong {
+      color: #0a1e3f;
+    }
+
     .component-container {
       display: flex;
       flex-direction: column;
@@ -199,27 +215,31 @@
     .tekenbord-container .tekenknoppen button:hover { background: #f1f5f9; }
 
     /* MODALS */
-    .modal-overlay, .name-overlay, .topic-overlay {
+    .modal-overlay, .name-overlay, .topic-overlay, .topic-edit-overlay {
       position: fixed; top: 0; left: 0; right: 0; bottom: 0;
       background: rgba(10, 30, 63, 0.6); backdrop-filter: blur(6px);
       display: flex; justify-content: center; align-items: center; z-index: 2000;
     }
-    .modal, .name-modal, .topic-modal {
+    .modal, .name-modal, .topic-modal, .topic-edit-modal {
       background: #ffffff; padding: 35px; border-radius: 28px; width: 90%; max-width: 600px;
       box-shadow: 0 25px 50px rgba(0,0,0,0.2); animation: slideUp 0.3s ease;
       border: 1px solid rgba(255,255,255,0.5);
     }
     @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-    .modal h3, .name-modal h3, .topic-modal h3 { margin-bottom: 20px; font-size: 1.4rem; color: #0f172a; }
-    .modal label, .name-modal label, .topic-modal label { display: block; margin: 16px 0 6px; font-weight: 600; color: #334155; }
-    .modal input, .modal textarea, .name-modal input, .topic-modal input { width: 100%; padding: 10px 14px; border: 1px solid #e2e8f0; border-radius: 12px; font-size: 1rem; background: #f8fafc; transition: 0.2s; }
-    .modal input:focus, .modal textarea:focus, .topic-modal input:focus { border-color: #f7c948; box-shadow: 0 0 0 3px rgba(247,201,72,0.2); background: #fff; outline: none; }
-    .modal .buttons, .topic-modal .buttons { display: flex; justify-content: flex-end; gap: 12px; margin-top: 25px; }
-    .modal .buttons button, .topic-modal .buttons button { padding: 10px 28px; border: none; border-radius: 12px; font-weight: 600; cursor: pointer; transition: 0.2s; }
-    .modal .btn-cancel, .topic-modal .btn-cancel { background: #f1f5f9; color: #475569; }
-    .modal .btn-cancel:hover, .topic-modal .btn-cancel:hover { background: #e2e8f0; }
-    .modal .btn-save, .topic-modal .btn-save { background: #f7c948; color: #0a1e3f; }
-    .modal .btn-save:hover, .topic-modal .btn-save:hover { background: #e5b840; transform: translateY(-1px); }
+    .modal h3, .name-modal h3, .topic-modal h3, .topic-edit-modal h3 { margin-bottom: 20px; font-size: 1.4rem; color: #0f172a; }
+    .modal label, .name-modal label, .topic-modal label, .topic-edit-modal label { display: block; margin: 16px 0 6px; font-weight: 600; color: #334155; }
+    .modal input, .modal textarea, .name-modal input, .topic-modal input, .topic-edit-modal input, .topic-edit-modal textarea {
+      width: 100%; padding: 10px 14px; border: 1px solid #e2e8f0; border-radius: 12px; font-size: 1rem; background: #f8fafc; transition: 0.2s;
+    }
+    .modal input:focus, .modal textarea:focus, .topic-edit-modal input:focus, .topic-edit-modal textarea:focus {
+      border-color: #f7c948; box-shadow: 0 0 0 3px rgba(247,201,72,0.2); background: #fff; outline: none;
+    }
+    .modal .buttons, .topic-modal .buttons, .topic-edit-modal .buttons { display: flex; justify-content: flex-end; gap: 12px; margin-top: 25px; }
+    .modal .buttons button, .topic-modal .buttons button, .topic-edit-modal .buttons button { padding: 10px 28px; border: none; border-radius: 12px; font-weight: 600; cursor: pointer; transition: 0.2s; }
+    .modal .btn-cancel, .topic-modal .btn-cancel, .topic-edit-modal .btn-cancel { background: #f1f5f9; color: #475569; }
+    .modal .btn-cancel:hover, .topic-modal .btn-cancel:hover, .topic-edit-modal .btn-cancel:hover { background: #e2e8f0; }
+    .modal .btn-save, .topic-modal .btn-save, .topic-edit-modal .btn-save { background: #f7c948; color: #0a1e3f; }
+    .modal .btn-save:hover, .topic-modal .btn-save:hover, .topic-edit-modal .btn-save:hover { background: #e5b840; transform: translateY(-1px); }
     .name-modal button { padding: 10px 28px; border: none; border-radius: 12px; font-weight: 600; cursor: pointer; background: #f7c948; color: #0a1e3f; }
     .name-modal button:hover { background: #e5b840; }
 
@@ -298,14 +318,13 @@
   </div>
 </div>
 
-<!-- MODAL VOOR ONDERWERPEN BEHEER -->
+<!-- MODAL VOOR ONDERWERPEN BEHEER (overzicht) -->
 <div id="topic-overlay" class="topic-overlay" style="display:none;">
   <div class="topic-modal">
     <h3>📚 Beheer onderwerpen</h3>
     <div id="topic-list-container" style="max-height:300px; overflow-y:auto; margin-bottom:15px;"></div>
     <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-top:10px;">
-      <input type="text" id="new-topic-title" placeholder="Titel nieuw onderwerp..." style="flex:1;">
-      <button onclick="addTopic()" style="padding:10px 20px; background:#f7c948; color:#0a1e3f; border:none; border-radius:12px; font-weight:600; cursor:pointer;">➕ Toevoegen</button>
+      <button onclick="openAddTopicModal()" style="padding:10px 20px; background:#f7c948; color:#0a1e3f; border:none; border-radius:12px; font-weight:600; cursor:pointer;">➕ Nieuw onderwerp</button>
     </div>
     <div class="buttons">
       <button class="btn-cancel" onclick="closeTopicModal()">Sluiten</button>
@@ -313,8 +332,23 @@
   </div>
 </div>
 
+<!-- MODAL VOOR ONDERWERP TOEVOEGEN / BEWERKEN -->
+<div id="topic-edit-overlay" class="topic-edit-overlay" style="display:none;">
+  <div class="topic-edit-modal">
+    <h3 id="topic-edit-title">Onderwerp toevoegen</h3>
+    <label>Titel</label>
+    <input type="text" id="topic-edit-title-input" placeholder="Titel van het onderwerp">
+    <label>Lesdoelen</label>
+    <textarea id="topic-edit-goals-input" rows="4" placeholder="Wat zijn de doelen van deze les?"></textarea>
+    <div class="buttons">
+      <button class="btn-cancel" onclick="closeTopicEditModal()">Annuleren</button>
+      <button class="btn-save" onclick="saveTopic()">Opslaan</button>
+    </div>
+  </div>
+</div>
+
 <script>
-  // ---------- FIREBASE CONFIG (nieuw) ----------
+  // ---------- FIREBASE CONFIG ----------
   const firebaseConfig = {
     apiKey: "AIzaSyBOo2LzR1IBnsiBR2SCwPJABtaRv0tpKQ4",
     authDomain: "speeltuin-recherche.firebaseapp.com",
@@ -385,11 +419,11 @@
   // ---------- STANDARD ONDERWERPEN (default) ----------
   function getDefaultTopics() {
     return [
-      { id: 'topic_1', title: '1. BTV op de politieacademie' },
-      { id: 'topic_2', title: '2. Mutatie' },
-      { id: 'topic_3', title: '3. PV Aangifte' },
-      { id: 'topic_4', title: '4. PV Bevindingen' },
-      { id: 'topic_5', title: '5. Kwaliteitscheck 3F' }
+      { id: 'topic_1', title: '1. BTV op de politieacademie', goals: 'Kennismaken met de basis van BTV en het belang voor de politiepraktijk.' },
+      { id: 'topic_2', title: '2. Mutatie', goals: 'Leren wat een mutatie is en hoe je deze correct noteert.' },
+      { id: 'topic_3', title: '3. PV Aangifte', goals: 'De stappen van een proces‑verbaal van aangifte doorlopen en de aandachtspunten begrijpen.' },
+      { id: 'topic_4', title: '4. PV Bevindingen', goals: 'Inzicht krijgen in de opbouw en vereisten van een proces‑verbaal van bevindingen.' },
+      { id: 'topic_5', title: '5. Kwaliteitscheck 3F', goals: 'Je eigen verslaglegging kunnen evalueren aan de hand van de 3F‑criteria.' }
     ];
   }
 
@@ -415,8 +449,9 @@
   }
 
   // ---------- STATE ----------
-  let topics = [];              // array van {id, title}
+  let topics = [];              // array van {id, title, goals}
   let data = {};               // componenten per topicId
+  let editingTopicIndex = null; // voor topic edit modal
 
   // ---------- COMPONENT TYPES ----------
   const componentTypes = [
@@ -477,6 +512,13 @@
       header.innerHTML = `${topic.title} <span class="arrow">▶</span>`;
       header.onclick = () => toggleAccordion(header, topic.id);
       const panel = document.createElement('div'); panel.className = 'accordion-panel'; panel.id = `panel-${topic.id}`;
+      
+      // Voeg lesdoelen toe bovenaan
+      const goalsDiv = document.createElement('div');
+      goalsDiv.className = 'lesson-goals';
+      goalsDiv.innerHTML = `<strong>🎯 Lesdoelen</strong><br>${escapeHtml(topic.goals || 'Geen doelen ingevoerd.')}`;
+      panel.appendChild(goalsDiv);
+
       const compContainer = document.createElement('div'); compContainer.className = 'component-container'; compContainer.id = `components-${topic.id}`; panel.appendChild(compContainer);
 
       if (isDocentMode) {
@@ -750,7 +792,7 @@
       div.innerHTML = `
         <span class="titel">${escapeHtml(topic.title)}</span>
         <div class="acties">
-          <button class="edit" onclick="editTopic(${idx})">✎</button>
+          <button class="edit" onclick="openEditTopicModal(${idx})">✎</button>
           <button class="delete" onclick="deleteTopic(${idx})">✕</button>
         </div>
       `;
@@ -758,28 +800,50 @@
     });
   }
 
-  function addTopic() {
-    const input = document.getElementById('new-topic-title');
-    const title = input.value.trim();
-    if (!title) { alert('Voer een titel in.'); return; }
-    const newTopic = { id: 'topic_' + Date.now(), title: title };
-    topics.push(newTopic);
-    db.ref('topics').set(topics);
-    // Voeg leeg componenten‑array toe voor dit topic in draft & published
-    db.ref(`draft/${newTopic.id}`).set([]);
-    db.ref(`published/${newTopic.id}`).set([]);
-    input.value = '';
-    renderTopicList();
+  // Open modal om een nieuw onderwerp toe te voegen
+  function openAddTopicModal() {
+    editingTopicIndex = null;
+    document.getElementById('topic-edit-title').textContent = 'Onderwerp toevoegen';
+    document.getElementById('topic-edit-title-input').value = '';
+    document.getElementById('topic-edit-goals-input').value = '';
+    document.getElementById('topic-edit-overlay').style.display = 'flex';
   }
 
-  function editTopic(index) {
+  // Open modal om een bestaand onderwerp te bewerken
+  function openEditTopicModal(index) {
+    editingTopicIndex = index;
     const topic = topics[index];
-    const newTitle = prompt('Hernoem het onderwerp:', topic.title);
-    if (newTitle !== null && newTitle.trim() !== '') {
-      topics[index].title = newTitle.trim();
+    document.getElementById('topic-edit-title').textContent = 'Onderwerp bewerken';
+    document.getElementById('topic-edit-title-input').value = topic.title;
+    document.getElementById('topic-edit-goals-input').value = topic.goals || '';
+    document.getElementById('topic-edit-overlay').style.display = 'flex';
+  }
+
+  function closeTopicEditModal() {
+    document.getElementById('topic-edit-overlay').style.display = 'none';
+    editingTopicIndex = null;
+  }
+
+  function saveTopic() {
+    const title = document.getElementById('topic-edit-title-input').value.trim();
+    const goals = document.getElementById('topic-edit-goals-input').value.trim();
+    if (!title) { alert('Voer een titel in.'); return; }
+    if (editingTopicIndex === null) {
+      // Nieuw onderwerp
+      const newTopic = { id: 'topic_' + Date.now(), title: title, goals: goals };
+      topics.push(newTopic);
       db.ref('topics').set(topics);
-      renderTopicList();
+      // Voeg leeg componenten‑array toe voor dit topic in draft & published
+      db.ref(`draft/${newTopic.id}`).set([]);
+      db.ref(`published/${newTopic.id}`).set([]);
+    } else {
+      // Bewerk bestaand
+      topics[editingTopicIndex].title = title;
+      topics[editingTopicIndex].goals = goals;
+      db.ref('topics').set(topics);
     }
+    closeTopicEditModal();
+    renderTopicList(); // herlaad lijst in de modal
   }
 
   function deleteTopic(index) {
