@@ -64,8 +64,6 @@
     #switchModeBtn:hover { background: #e5b840; transform: translateY(-2px); }
     #publishBtn { background: #b5e6c3; color: #1a6b3a; }
     #publishBtn:hover { background: #9dd9b0; transform: translateY(-2px); }
-    #resetBtn { background: #fcd5d5; color: #9b2c2c; }
-    #resetBtn:hover { background: #f8b8b8; transform: translateY(-2px); }
     #manageTopicsBtn { background: #c5d9f7; color: #1a4b8c; }
     #manageTopicsBtn:hover { background: #b0c9f2; transform: translateY(-2px); }
     #addLessonBtn { background: #f7c948; color: #0a1e3f; }
@@ -80,6 +78,7 @@
       transform: translateY(-2px);
     }
 
+
     .mode-indicator {
       display: inline-block;
       padding: 6px 16px;
@@ -91,6 +90,7 @@
     }
     .mode-indicator.docent { background: rgba(247, 201, 72, 0.25); color: #0a1e3f; }
     .mode-indicator.student { background: rgba(209, 250, 229, 0.8); color: #065f46; }
+
 
     /* ACCORDEON */
     .accordion-item {
@@ -132,6 +132,7 @@
       overflow-y: auto;
       padding: 10px 10px 20px 10px;
     }
+
 
     /* LESSEN WEERGAVE */
     .lesson-container {
@@ -185,12 +186,15 @@
       margin: 10px 0;
     }
 
+
     /* COMPONENT ITEMS */
     .component-item {
+      position: relative;
       display: flex;
       align-items: flex-start;
       gap: 12px;
       padding: 16px 20px;
+      padding-right: 100px; /* Ruimte voor acties rechtsboven */
       background: #ffffff;
       border-radius: 18px;
       border-left: 6px solid #f7c948;
@@ -202,20 +206,29 @@
     .component-item .content { flex: 1; }
     .component-item .content p { line-height: 1.6; color: #334155; }
 
-    /* ACTIONS (voor componenten) */
-    .component-item .actions { display: flex; gap: 6px; margin-top: 2px; align-items: center; }
+
+    /* ACTIONS (voor componenten, rechtsboven geplaatst) */
+    .component-item .actions { 
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      display: flex; 
+      gap: 6px; 
+      align-items: center; 
+    }
     .component-item .actions button {
       background: #f1f5f9; border: none; cursor: pointer;
       font-size: 0.85rem; color: #64748b; padding: 6px 10px; border-radius: 8px;
       transition: 0.2s;
     }
     .component-item .actions button:hover { background: #e2e8f0; color: #0f172a; }
-    .component-item .actions .delete { color: #ef4444; }
+    .component-item .actions .delete { color: #ef4444; font-weight: bold; }
     .component-item .actions .delete:hover { background: #fee2e2; }
     .component-item .actions .toggle {
       font-size: 0.75rem; padding: 4px 12px; border-radius: 100px; background: #e2e8f0; color: #475569; font-weight: 600;
     }
     .component-item .actions .toggle.on { background: #86efac; color: #14532d; }
+
 
     /* ADD AREA binnen een les */
     .add-component-area {
@@ -238,6 +251,7 @@
     }
     .add-component-area button:hover { background: #e5b840; transform: translateY(-1px); }
 
+
     /* COMPONENT‑SPECIFIEKE STIJLEN */
     .youtube-iframe { width: 100%; max-width: 560px; height: 315px; border: none; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
     .vraag-input, .html-input { display: flex; gap: 10px; flex-wrap: wrap; margin: 12px 0; }
@@ -245,6 +259,7 @@
     .vraag-input input:focus { border-color: #f7c948; box-shadow: 0 0 0 3px rgba(247,201,72,0.2); background: #fff; }
     .vraag-input button, .html-input button { padding: 10px 20px; background: #f7c948; color: #0a1e3f; border: none; border-radius: 12px; cursor: pointer; font-weight: 500; }
     .vraag-input button:hover { background: #e5b840; }
+
 
     /* Antwoorden & feeds */
     .antwoord-lijst, .vorige-les-lijst { margin-top: 12px; border-top: 2px solid #f1f5f9; padding-top: 12px; }
@@ -256,26 +271,22 @@
     .tekenbord-container .tekenknoppen button { padding: 6px 16px; border: 1px solid #e2e8f0; border-radius: 10px; background: #f8fafc; cursor: pointer; font-weight: 500; }
     .tekenbord-container .tekenknoppen button:hover { background: #f1f5f9; }
 
-    /* Bestand preview */
-    .file-preview {
-      margin-top: 10px;
-      max-width: 100%;
+
+    /* Bestand preview venster */
+    .file-window {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      margin-top: 8px;
     }
     .file-preview iframe, .file-preview img {
       max-width: 100%;
       border: 1px solid #e2e8f0;
       border-radius: 12px;
     }
-    .file-preview a {
-      display: inline-block;
-      padding: 8px 16px;
-      background: #f7c948;
-      color: #0a1e3f;
-      border-radius: 8px;
-      text-decoration: none;
-      font-weight: 600;
-    }
-    .file-preview a:hover { background: #e5b840; }
+
 
     /* MODALS */
     .modal-overlay, .name-overlay, .topic-overlay, .lesson-edit-overlay {
@@ -306,6 +317,7 @@
     .name-modal button { padding: 10px 28px; border: none; border-radius: 12px; font-weight: 600; cursor: pointer; background: #f7c948; color: #0a1e3f; }
     .name-modal button:hover { background: #e5b840; }
 
+
     /* Topic management lijst in modal */
     .topic-list-item {
       display: flex;
@@ -326,15 +338,17 @@
     .topic-list-item .acties .edit { color: #0a1e3f; }
     .topic-list-item .acties .edit:hover { background: #f1f5f9; }
 
+
     @media (max-width: 600px) {
       .container { padding: 20px; }
       .accordion-header { font-size: 1rem; padding: 16px 5px; }
-      .component-item { flex-wrap: wrap; }
-      .component-item .actions { width: 100%; justify-content: flex-end; margin-top: 6px; }
+      .component-item { flex-wrap: wrap; padding-right: 20px; padding-top: 45px; }
+      .component-item .actions { top: 10px; right: 10px; }
     }
   </style>
 </head>
 <body>
+
 
 <!-- NAAM INVOER -->
 <div id="name-overlay" class="name-overlay" style="display:none;">
@@ -348,6 +362,7 @@
   </div>
 </div>
 
+
 <div class="container">
   <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:10px;">
     <div>
@@ -359,16 +374,18 @@
     </div>
   </div>
 
+
   <div class="header-actions" id="headerActions">
     <button id="switchModeBtn">🔄 Schakel naar docentmodus</button>
     <button id="fullscreenBtn" style="display:none;">⛶ Volledig scherm</button>
     <button id="manageTopicsBtn" style="display:none;">📚 Beheer onderwerpen</button>
     <button id="publishBtn" style="display:none;">📤 Publiceer</button>
-    <button id="resetBtn" style="display:none;">🔄 Reset alles</button>
   </div>
+
 
   <div id="accordion-root"></div>
 </div>
+
 
 <!-- MODAL VOOR COMPONENT BEWERKEN / TOEVOEGEN -->
 <div id="modal-overlay" class="modal-overlay" style="display:none;">
@@ -381,6 +398,7 @@
     </div>
   </div>
 </div>
+
 
 <!-- MODAL VOOR ONDERWERPEN BEHEER -->
 <div id="topic-overlay" class="topic-overlay" style="display:none;">
@@ -395,6 +413,7 @@
     </div>
   </div>
 </div>
+
 
 <!-- MODAL VOOR LES TOEVOEGEN / BEWERKEN -->
 <div id="lesson-edit-overlay" class="lesson-edit-overlay" style="display:none;">
@@ -411,6 +430,7 @@
   </div>
 </div>
 
+
 <script>
   // ---------- FIREBASE CONFIG ----------
   const firebaseConfig = {
@@ -426,24 +446,25 @@
   const db = firebase.database();
   const storage = firebase.storage();
 
+
   // ---------- MODE DETECTIE ----------
   const urlParams = new URLSearchParams(window.location.search);
   const mode = urlParams.get('mode') || 'view';
   const isDocentMode = (mode === 'edit');
 
+
   const modeIndicator = document.getElementById('modeIndicator');
   const switchBtn = document.getElementById('switchModeBtn');
   const manageTopicsBtn = document.getElementById('manageTopicsBtn');
   const publishBtn = document.getElementById('publishBtn');
-  const resetBtn = document.getElementById('resetBtn');
   const fullscreenBtn = document.getElementById('fullscreenBtn');
+
 
   if (isDocentMode) {
     modeIndicator.textContent = '👨‍🏫 Docent (bewerken)';
     modeIndicator.className = 'mode-indicator docent';
     manageTopicsBtn.style.display = 'inline-block';
     publishBtn.style.display = 'inline-block';
-    resetBtn.style.display = 'inline-block';
     switchBtn.textContent = '👩‍🎓 Schakel naar studentenmodus';
     switchBtn.style.background = '#f7c948';
     switchBtn.style.color = '#0a1e3f';
@@ -459,6 +480,7 @@
     }
   }
 
+
   // ---------- FULLSCREEN KNOP ----------
   fullscreenBtn.addEventListener('click', function() {
     if (!document.fullscreenElement) {
@@ -470,6 +492,7 @@
     }
   });
 
+
   document.addEventListener('fullscreenchange', function() {
     if (document.fullscreenElement) {
       fullscreenBtn.textContent = '⛶ Verlaat volledig scherm';
@@ -477,6 +500,7 @@
       fullscreenBtn.textContent = '⛶ Volledig scherm';
     }
   });
+
 
   // ---------- SCHAKELKNOP ----------
   switchBtn.addEventListener('click', function() {
@@ -489,6 +513,7 @@
       window.location.href = currentUrl + separator + 'mode=edit';
     }
   });
+
 
   // ---------- GEBRUIKERSNAAM ----------
   let currentUserName = localStorage.getItem('politieacademie_naam') || '';
@@ -505,6 +530,7 @@
     }
   });
 
+
   // ---------- DEFAULT DATA ----------
   function getDefaultTopics() {
     return [
@@ -515,6 +541,7 @@
       { id: 'topic_5', title: '5. Kwaliteitscheck 3F' }
     ];
   }
+
 
   function getDefaultLessons() {
     return {
@@ -546,6 +573,7 @@
     };
   }
 
+
   // ---------- STATE ----------
   let topics = [];              // array van {id, title}
   let lessons = {};            // object: topicId -> array van {id, title, goals, components: [...]}
@@ -556,6 +584,7 @@
   let currentLessonIdForComponent = null;
   let currentComponentIndex = null;
   let modalMode = 'add';
+
 
   // ---------- COMPONENT TYPES ----------
   const componentTypes = [
@@ -570,10 +599,12 @@
     { value: 'iframe', label: 'Iframe (externe pagina)' }
   ];
 
+
   // ---------- LOAD DATA ----------
   function loadData() {
     const topicsRef = db.ref('topics');
     const lessonsRef = db.ref(isDocentMode ? 'draftLessons' : 'publishedLessons');
+
 
     topicsRef.on('value', (snapshot) => {
       let topicsVal = snapshot.val();
@@ -587,6 +618,7 @@
       }
       topics = topicsVal;
       renderAccordion();
+
 
       lessonsRef.on('value', (snap) => {
         const val = snap.val();
@@ -604,6 +636,7 @@
     });
   }
 
+
   // ---------- RENDER ACCORDION ----------
   function renderAccordion() {
     const root = document.getElementById('accordion-root');
@@ -620,6 +653,7 @@
       lessonContainer.id = `lessons-${topic.id}`;
       panel.appendChild(lessonContainer);
 
+
       if (isDocentMode) {
         // Knop om een les toe te voegen binnen dit onderwerp
         const addLessonDiv = document.createElement('div');
@@ -628,9 +662,11 @@
         panel.appendChild(addLessonDiv);
       }
 
+
       item.appendChild(header); item.appendChild(panel); root.appendChild(item);
     });
   }
+
 
   function toggleAccordion(header, topicId) {
     const panel = document.getElementById(`panel-${topicId}`);
@@ -639,6 +675,7 @@
     document.querySelectorAll('.accordion-header').forEach(h => h.classList.remove('active'));
     if (!isOpen) { panel.classList.add('open'); header.classList.add('active'); }
   }
+
 
   // ---------- RENDER LESSEN EN COMPONENTEN ----------
   function renderAllComponents() {
@@ -666,6 +703,7 @@
         }
         lessonDiv.appendChild(headerDiv);
 
+
         // Doelen
         if (lesson.goals) {
           const goalsDiv = document.createElement('div');
@@ -673,6 +711,7 @@
           goalsDiv.textContent = lesson.goals;
           lessonDiv.appendChild(goalsDiv);
         }
+
 
         // Componenten
         const compContainer = document.createElement('div');
@@ -686,19 +725,22 @@
           renderComponentContent(contentDiv, comp, topic.id, lesson.id);
           item.appendChild(contentDiv);
 
+
           if (isDocentMode) {
             const actions = document.createElement('div'); actions.className = 'actions';
             const toggleBtn = document.createElement('button'); toggleBtn.className = 'toggle' + (comp.active !== false ? ' on' : ''); toggleBtn.textContent = comp.active !== false ? 'Aan' : 'Uit'; toggleBtn.onclick = () => toggleComponent(topic.id, lesson.id, compIndex);
             actions.appendChild(toggleBtn);
             const editBtn = document.createElement('button'); editBtn.innerHTML = '✎'; editBtn.onclick = () => openEditComponentModal(topic.id, lesson.id, compIndex);
-            const delBtn = document.createElement('button'); delBtn.innerHTML = '✕'; delBtn.className = 'delete'; delBtn.onclick = () => deleteComponent(topic.id, lesson.id, compIndex);
+            const delBtn = document.createElement('button'); delBtn.innerHTML = '✕'; delBtn.className = 'delete'; delBtn.title = "Verwijderen"; delBtn.onclick = () => deleteComponent(topic.id, lesson.id, compIndex);
             actions.appendChild(editBtn); actions.appendChild(delBtn);
             item.appendChild(actions);
           }
 
+
           compContainer.appendChild(item);
         });
         lessonDiv.appendChild(compContainer);
+
 
         // Toevoeggebied voor componenten (alleen docent)
         if (isDocentMode) {
@@ -708,10 +750,12 @@
           lessonDiv.appendChild(addArea);
         }
 
+
         container.appendChild(lessonDiv);
       });
     });
   }
+
 
   // ---------- RENDER COMPONENT CONTENT (met lessonId) ----------
   function renderComponentContent(container, comp, topicId, lessonId) {
@@ -769,16 +813,21 @@
           const imageExts = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp', 'svg'];
           let previewHtml = '';
           if (imageExts.includes(ext)) {
-            previewHtml = `<img src="${escapeHtml(fileUrl)}" alt="${escapeHtml(fileName)}" class="file-preview" style="max-width:100%; max-height:400px; border-radius:12px;">`;
+            previewHtml = `<img src="${escapeHtml(fileUrl)}" alt="${escapeHtml(fileName)}" style="max-width:100%; max-height:450px; border-radius:8px; display:block; margin:0 auto;">`;
           } else if (ext === 'pdf') {
-            previewHtml = `<iframe src="${escapeHtml(fileUrl)}" class="file-preview" style="width:100%; height:500px; border:none; border-radius:12px;"></iframe>`;
+            previewHtml = `<iframe src="${escapeHtml(fileUrl)}" style="width:100%; height:500px; border:none; border-radius:8px;"></iframe>`;
           } else {
-            previewHtml = `<a href="${escapeHtml(fileUrl)}" target="_blank" download="${escapeHtml(fileName)}" style="display:inline-block; padding:8px 16px; background:#f7c948; color:#0a1e3f; border-radius:8px; text-decoration:none; font-weight:600;">📥 Download ${escapeHtml(fileName)}</a>`;
+            previewHtml = `<div style="padding: 20px; text-align: center;"><a href="${escapeHtml(fileUrl)}" target="_blank" download="${escapeHtml(fileName)}" style="display:inline-block; padding:10px 20px; background:#f7c948; color:#0a1e3f; border-radius:8px; text-decoration:none; font-weight:600;">📥 Download ${escapeHtml(fileName)}</a></div>`;
           }
           container.innerHTML = `
-            <div class="file-preview">
-              <p style="font-weight:600; margin-bottom:8px;">📁 ${escapeHtml(fileName)}</p>
-              ${previewHtml}
+            <div class="file-window">
+              <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #e2e8f0; padding-bottom:8px; margin-bottom:12px;">
+                <span style="font-weight:700; color:#0a1e3f; display:flex; align-items:center; gap:6px;">📁 ${escapeHtml(fileName)}</span>
+                <a href="${escapeHtml(fileUrl)}" target="_blank" style="font-size:0.85rem; color:#1a4b8c; text-decoration:none; font-weight:600;">↗ Openen</a>
+              </div>
+              <div class="file-preview">
+                ${previewHtml}
+              </div>
             </div>
           `;
         }
@@ -799,6 +848,7 @@
     }
   }
 
+
   // ---------- TOGGLE COMPONENT ----------
   function toggleComponent(topicId, lessonId, compIndex) {
     if (!isDocentMode) return;
@@ -809,6 +859,7 @@
     comp.active = comp.active !== false ? false : true;
     saveLessonComponents(topicId, lessonId);
   }
+
 
   // ---------- LIVE FEEDS (aangepast met lessonId) ----------
   function listenToAnswers(topicId, lessonId, compId) {
@@ -828,6 +879,7 @@
     input.value = '';
   }
 
+
   function listenToVorigeLes(topicId, lessonId, compId) {
     db.ref(`vorigeLes/${topicId}/${lessonId}/${compId}`).on('value', (sn) => {
       const val = sn.val(); const el = document.getElementById(`vorige-les-lijst-${compId}`);
@@ -845,6 +897,7 @@
     input.value = '';
   }
 
+
   // ---------- TEKENBORD (aangepast met lessonId) ----------
   let drawingState = {};
   function initDrawing(topicId, lessonId, compId) {
@@ -853,6 +906,7 @@
     const ctx = canvas.getContext('2d');
     const key = `${topicId}-${lessonId}-${compId}`;
     drawingState[key] = { canvas, ctx, isDrawing: false };
+
 
     db.ref(`drawings/${topicId}/${lessonId}/${compId}`).on('value', (sn) => {
       if (drawingState[key].isDrawing) return;
@@ -869,6 +923,7 @@
       }
     });
 
+
     const startDraw = (x, y) => {
       ctx.beginPath();
       ctx.moveTo(x, y);
@@ -884,6 +939,7 @@
       saveDrawing(topicId, lessonId, compId);
     };
 
+
     canvas.addEventListener('mousedown', (e) => {
       const r = canvas.getBoundingClientRect();
       startDraw((e.clientX - r.left) * (canvas.width / r.width), (e.clientY - r.top) * (canvas.height / r.height));
@@ -895,6 +951,7 @@
     });
     canvas.addEventListener('mouseup', endDraw);
     canvas.addEventListener('mouseleave', endDraw);
+
 
     canvas.addEventListener('touchstart', (e) => {
       e.preventDefault();
@@ -912,12 +969,14 @@
     canvas.addEventListener('touchend', endDraw);
   }
 
+
   function saveDrawing(topicId, lessonId, compId) {
     const key = `${topicId}-${lessonId}-${compId}`;
     const state = drawingState[key];
     if (!state) return;
     db.ref(`drawings/${topicId}/${lessonId}/${compId}`).set(state.canvas.toDataURL('image/png'));
   }
+
 
   function clearDrawing(topicId, lessonId, compId) {
     const key = `${topicId}-${lessonId}-${compId}`;
@@ -927,9 +986,11 @@
     db.ref(`drawings/${topicId}/${lessonId}/${compId}`).remove();
   }
 
+
   function loadAllFeeds() { /* done by listeners */ }
 
-  // ---------- BESTANDSUPLOAD (verbeterd) ----------
+
+  // ---------- BESTANDSUPLOAD ----------
   function uploadFile(file, topicId, lessonId, compId) {
     return new Promise((resolve, reject) => {
       if (!file) reject('Geen bestand geselecteerd.');
@@ -956,6 +1017,7 @@
     });
   }
 
+
   // ---------- MODAL FUNCTIES (componenten) ----------
   function openAddComponentModal(topicId, lessonId) {
     if (!isDocentMode) return;
@@ -966,6 +1028,7 @@
     const type = document.getElementById(`type-select-${topicId}-${lessonId}`).value;
     openComponentModalForType(type, null);
   }
+
 
   function openEditComponentModal(topicId, lessonId, compIndex) {
     if (!isDocentMode) return;
@@ -985,6 +1048,7 @@
     }
     openComponentModalForType(comp.type, comp);
   }
+
 
   function openComponentModalForType(type, existing) {
     const overlay = document.getElementById('modal-overlay'); const title = document.getElementById('modal-title'); const form = document.getElementById('modal-form');
@@ -1037,6 +1101,7 @@
     html += `<label style="margin-top:15px;"><input type="checkbox" id="modal-active" ${existing && existing.active === false ? '' : 'checked'}> Component actief</label>`;
     form.innerHTML = html; overlay.style.display = 'flex';
 
+
     // Event listener voor bestand preview in modal
     if (type === 'file') {
       const fileInput = document.getElementById('modal-file');
@@ -1071,7 +1136,9 @@
     }
   }
 
+
   function closeModal() { document.getElementById('modal-overlay').style.display = 'none'; }
+
 
   function saveModal() {
     if (!isDocentMode) return;
@@ -1126,7 +1193,8 @@
     finishSaveComponent(newComp);
   }
 
-  // ---------- FINISH SAVE COMPONENT (verbeterd) ----------
+
+  // ---------- FINISH SAVE COMPONENT ----------
   function finishSaveComponent(newComp) {
     newComp.active = document.getElementById('modal-active').checked;
     if (!newComp.id) {
@@ -1139,7 +1207,6 @@
       alert('Er is een fout opgetreden. Probeer de pagina te verversen.');
       return;
     }
-    // Vind de les
     const topicLessons = lessons[topicId];
     if (!topicLessons) {
       console.error('Topic niet gevonden:', topicId);
@@ -1152,7 +1219,6 @@
       alert('Les niet gevonden.');
       return;
     }
-    // Zorg dat components een array is
     if (!lesson.components) {
       lesson.components = [];
     }
@@ -1161,17 +1227,13 @@
     } else {
       const idx = currentComponentIndex;
       if (idx !== null && idx < lesson.components.length) {
-        // Bewerk bestaand component
         newComp.id = lesson.components[idx].id;
         lesson.components[idx] = newComp;
       } else {
-        // Veiligheid: als index ongeldig is, voeg toe
         lesson.components.push(newComp);
       }
     }
-    // Sla op in Firebase
     saveLessonComponents(topicId, lessonId);
-    // Herstel knop
     const saveBtn = document.querySelector('#modal-overlay .btn-save');
     if (saveBtn) {
       saveBtn.disabled = false;
@@ -1180,18 +1242,19 @@
     closeModal();
   }
 
-  // ---------- SAVE LESSON COMPONENTS (verbeterd) ----------
+
+  // ---------- SAVE LESSON COMPONENTS ----------
   function saveLessonComponents(topicId, lessonId) {
     const lesson = lessons[topicId]?.find(l => l.id === lessonId);
     if (!lesson) return;
     const dataRef = db.ref(isDocentMode ? 'draftLessons' : 'publishedLessons');
-    // Update de hele array voor dit topic
     const updateObj = {};
     updateObj[topicId] = lessons[topicId];
     dataRef.update(updateObj).catch(err => {
       console.error('Fout bij opslaan van lessen:', err);
     });
   }
+
 
   function deleteComponent(topicId, lessonId, compIndex) {
     if (!isDocentMode) return;
@@ -1212,6 +1275,7 @@
     saveLessonComponents(topicId, lessonId);
   }
 
+
   // ---------- LESSEN BEHEER ----------
   function openAddLessonModal(topicId) {
     editingLessonTopicId = topicId;
@@ -1221,6 +1285,7 @@
     document.getElementById('lesson-edit-goals-input').value = '';
     document.getElementById('lesson-edit-overlay').style.display = 'flex';
   }
+
 
   function openEditLessonModal(topicId, lessonIndex) {
     editingLessonTopicId = topicId;
@@ -1232,11 +1297,13 @@
     document.getElementById('lesson-edit-overlay').style.display = 'flex';
   }
 
+
   function closeLessonEditModal() {
     document.getElementById('lesson-edit-overlay').style.display = 'none';
     editingLessonTopicId = null;
     editingLessonIndex = null;
   }
+
 
   function saveLesson() {
     console.log("saveLesson gestart");
@@ -1260,8 +1327,8 @@
       return;
     }
 
+
     if (editingLessonIndex === null) {
-      // Nieuwe les
       const newLesson = {
         id: 'lesson_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6),
         title: title,
@@ -1272,7 +1339,6 @@
       lessons[topicId].push(newLesson);
       console.log("Nieuwe les toegevoegd:", newLesson);
     } else {
-      // Bewerk bestaande
       const lesson = lessons[topicId][editingLessonIndex];
       if (!lesson) {
         console.error("Les niet gevonden op index", editingLessonIndex);
@@ -1284,17 +1350,19 @@
       console.log("Les bijgewerkt:", lesson);
     }
 
-    // Opslaan in Firebase
+
     const dataRef = db.ref(isDocentMode ? 'draftLessons' : 'publishedLessons');
     const updateObj = {};
     updateObj[topicId] = lessons[topicId];
     console.log("Updaten Firebase:", updateObj);
+
 
     const saveBtn = document.querySelector('#lesson-edit-overlay .btn-save');
     if (saveBtn) {
       saveBtn.disabled = true;
       saveBtn.textContent = 'Bezig met opslaan...';
     }
+
 
     dataRef.update(updateObj)
       .then(() => {
@@ -1315,11 +1383,11 @@
       });
   }
 
+
   function deleteLesson(topicId, lessonIndex) {
     if (!confirm('Weet je zeker dat je deze les wilt verwijderen? Alle bijbehorende componenten en data gaan verloren.')) return;
     const lesson = lessons[topicId][lessonIndex];
     if (!lesson) return;
-    // Verwijder gerelateerde data
     lesson.components.forEach(comp => {
       if (comp.type === 'vraag') db.ref(`answers/${topicId}/${lesson.id}/${comp.id}`).remove();
       if (comp.type === 'tekenbord') db.ref(`drawings/${topicId}/${lesson.id}/${comp.id}`).remove();
@@ -1336,12 +1404,14 @@
     dataRef.update(updateObj);
   }
 
+
   // ---------- ONDERWERPEN BEHEER ----------
   document.getElementById('manageTopicsBtn').addEventListener('click', function() {
     if (!isDocentMode) return;
     renderTopicList();
     document.getElementById('topic-overlay').style.display = 'flex';
   });
+
 
   function renderTopicList() {
     const container = document.getElementById('topic-list-container');
@@ -1359,12 +1429,14 @@
     });
   }
 
+
   function openAddTopicModal() {
     editingTopicIndex = null;
     document.getElementById('topic-edit-title').textContent = 'Onderwerp toevoegen';
     document.getElementById('topic-edit-title-input').value = '';
     document.getElementById('topic-edit-overlay').style.display = 'flex';
   }
+
 
   function openEditTopicModal(index) {
     editingTopicIndex = index;
@@ -1374,10 +1446,12 @@
     document.getElementById('topic-edit-overlay').style.display = 'flex';
   }
 
+
   function closeTopicEditModal() {
     document.getElementById('topic-edit-overlay').style.display = 'none';
     editingTopicIndex = null;
   }
+
 
   function saveTopic() {
     const title = document.getElementById('topic-edit-title-input').value.trim();
@@ -1386,7 +1460,6 @@
       const newTopic = { id: 'topic_' + Date.now(), title: title };
       topics.push(newTopic);
       db.ref('topics').set(topics);
-      // Lege lessen array aanmaken
       const dataRef = db.ref(isDocentMode ? 'draftLessons' : 'publishedLessons');
       const updateObj = {};
       updateObj[newTopic.id] = [];
@@ -1399,31 +1472,31 @@
     renderTopicList();
   }
 
+
   function deleteTopic(index) {
     const topic = topics[index];
     if (!confirm(`Weet je zeker dat je het onderwerp "${topic.title}" wilt verwijderen? Alle bijbehorende lessen en data gaan verloren.`)) return;
     const id = topic.id;
     topics.splice(index, 1);
     db.ref('topics').set(topics);
-    // Verwijder alle lessen en gerelateerde data
     const dataRef = db.ref(isDocentMode ? 'draftLessons' : 'publishedLessons');
     dataRef.child(id).remove();
-    // Verwijder ook feeds
     db.ref(`answers/${id}`).remove();
     db.ref(`drawings/${id}`).remove();
     db.ref(`vorigeLes/${id}`).remove();
     renderTopicList();
   }
 
+
   function closeTopicModal() {
     document.getElementById('topic-overlay').style.display = 'none';
   }
+
 
   // ---------- PUBLICATIE ----------
   document.getElementById('publishBtn').addEventListener('click', function() {
     if (!isDocentMode) return;
     if (!confirm('Weet je zeker dat je de huidige draft wilt publiceren naar de studenten?')) return;
-    // Publiceer zowel topics als lessen
     db.ref('topics').once('value').then(snapshot => {
       const topicsData = snapshot.val();
       db.ref('publishedTopics').set(topicsData);
@@ -1435,23 +1508,11 @@
     alert('✅ Gepubliceerd! Studenten zien nu de bijgewerkte versie.');
   });
 
-  // ---------- RESET ----------
-  document.getElementById('resetBtn').addEventListener('click', function() {
-    if (!isDocentMode) return;
-    if (!confirm('Weet je zeker dat je ALLE gegevens wilt wissen?')) return;
-    db.ref('answers').remove();
-    db.ref('drawings').remove();
-    db.ref('vorigeLes').remove();
-    const defaultTopics = getDefaultTopics();
-    db.ref('topics').set(defaultTopics);
-    const defaultLessons = getDefaultLessons();
-    db.ref('draftLessons').set(defaultLessons);
-    db.ref('publishedLessons').set(defaultLessons);
-  });
 
   // ---------- INIT ----------
   document.addEventListener('DOMContentLoaded', loadData);
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+
 
   function escapeHtml(text) { if (!text) return ''; const map = { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;' }; return text.replace(/[&<>"']/g, m => map[m]); }
 </script>
