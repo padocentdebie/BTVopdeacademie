@@ -6,10 +6,9 @@
   <title>Politieacademie – Interactief Lesmateriaal</title>
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <!-- Firebase compat SDK (Database + Storage) -->
+  <!-- Firebase compat SDK (Database) -->
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
   <style>
     /* ---- POLITIEACADEMIE STIJL ---- */
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -68,6 +67,7 @@
     #manageTopicsBtn:hover { background: #b0c9f2; transform: translateY(-2px); }
     #addLessonBtn { background: #f7c948; color: #0a1e3f; }
     #addLessonBtn:hover { background: #e5b840; transform: translateY(-2px); }
+    
     /* Fullscreen knop */
     #fullscreenBtn {
       background: #e2e8f0;
@@ -77,7 +77,6 @@
       background: #cbd5e1;
       transform: translateY(-2px);
     }
-
 
     .mode-indicator {
       display: inline-block;
@@ -90,7 +89,6 @@
     }
     .mode-indicator.docent { background: rgba(247, 201, 72, 0.25); color: #0a1e3f; }
     .mode-indicator.student { background: rgba(209, 250, 229, 0.8); color: #065f46; }
-
 
     /* ACCORDEON */
     .accordion-item {
@@ -128,11 +126,10 @@
       padding: 0 10px;
     }
     .accordion-panel.open {
-      max-height: 1200px; /* verhoogd voor lessen */
+      max-height: 1200px;
       overflow-y: auto;
       padding: 10px 10px 20px 10px;
     }
-
 
     /* LESSEN WEERGAVE */
     .lesson-container {
@@ -186,7 +183,6 @@
       margin: 10px 0;
     }
 
-
     /* COMPONENT ITEMS */
     .component-item {
       position: relative;
@@ -194,7 +190,7 @@
       align-items: flex-start;
       gap: 12px;
       padding: 16px 20px;
-      padding-right: 100px; /* Ruimte voor acties rechtsboven */
+      padding-right: 100px;
       background: #ffffff;
       border-radius: 18px;
       border-left: 6px solid #f7c948;
@@ -203,11 +199,10 @@
     }
     .component-item:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.06); }
     .component-item.disabled { opacity: 0.6; border-left-color: #cbd5e1; background: #f8fafc; }
-    .component-item .content { flex: 1; }
+    .component-item .content { flex: 1; width: 100%; }
     .component-item .content p { line-height: 1.6; color: #334155; }
 
-
-    /* ACTIONS (voor componenten, rechtsboven geplaatst) */
+    /* ACTIONS (rechtsboven geplaatst op de kaart) */
     .component-item .actions { 
       position: absolute;
       top: 12px;
@@ -228,7 +223,6 @@
       font-size: 0.75rem; padding: 4px 12px; border-radius: 100px; background: #e2e8f0; color: #475569; font-weight: 600;
     }
     .component-item .actions .toggle.on { background: #86efac; color: #14532d; }
-
 
     /* ADD AREA binnen een les */
     .add-component-area {
@@ -251,15 +245,13 @@
     }
     .add-component-area button:hover { background: #e5b840; transform: translateY(-1px); }
 
-
-    /* COMPONENT‑SPECIFIEKE STIJLEN */
+    /* COMPONENT SPECIFIEK */
     .youtube-iframe { width: 100%; max-width: 560px; height: 315px; border: none; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
     .vraag-input, .html-input { display: flex; gap: 10px; flex-wrap: wrap; margin: 12px 0; }
     .vraag-input input, .html-input textarea { flex: 1; padding: 10px 14px; border: 1px solid #e2e8f0; border-radius: 12px; font-size: 1rem; background: #f8fafc; transition: 0.2s; }
     .vraag-input input:focus { border-color: #f7c948; box-shadow: 0 0 0 3px rgba(247,201,72,0.2); background: #fff; }
     .vraag-input button, .html-input button { padding: 10px 20px; background: #f7c948; color: #0a1e3f; border: none; border-radius: 12px; cursor: pointer; font-weight: 500; }
     .vraag-input button:hover { background: #e5b840; }
-
 
     /* Antwoorden & feeds */
     .antwoord-lijst, .vorige-les-lijst { margin-top: 12px; border-top: 2px solid #f1f5f9; padding-top: 12px; }
@@ -270,7 +262,6 @@
     .tekenbord-container .tekenknoppen { margin-top: 8px; display: flex; gap: 10px; flex-wrap: wrap; }
     .tekenbord-container .tekenknoppen button { padding: 6px 16px; border: 1px solid #e2e8f0; border-radius: 10px; background: #f8fafc; cursor: pointer; font-weight: 500; }
     .tekenbord-container .tekenknoppen button:hover { background: #f1f5f9; }
-
 
     /* Bestand preview venster */
     .file-window {
@@ -286,7 +277,6 @@
       border: 1px solid #e2e8f0;
       border-radius: 12px;
     }
-
 
     /* MODALS */
     .modal-overlay, .name-overlay, .topic-overlay, .lesson-edit-overlay {
@@ -317,7 +307,6 @@
     .name-modal button { padding: 10px 28px; border: none; border-radius: 12px; font-weight: 600; cursor: pointer; background: #f7c948; color: #0a1e3f; }
     .name-modal button:hover { background: #e5b840; }
 
-
     /* Topic management lijst in modal */
     .topic-list-item {
       display: flex;
@@ -338,7 +327,6 @@
     .topic-list-item .acties .edit { color: #0a1e3f; }
     .topic-list-item .acties .edit:hover { background: #f1f5f9; }
 
-
     @media (max-width: 600px) {
       .container { padding: 20px; }
       .accordion-header { font-size: 1rem; padding: 16px 5px; }
@@ -348,7 +336,6 @@
   </style>
 </head>
 <body>
-
 
 <!-- NAAM INVOER -->
 <div id="name-overlay" class="name-overlay" style="display:none;">
@@ -362,7 +349,6 @@
   </div>
 </div>
 
-
 <div class="container">
   <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:10px;">
     <div>
@@ -374,7 +360,6 @@
     </div>
   </div>
 
-
   <div class="header-actions" id="headerActions">
     <button id="switchModeBtn">🔄 Schakel naar docentmodus</button>
     <button id="fullscreenBtn" style="display:none;">⛶ Volledig scherm</button>
@@ -382,10 +367,8 @@
     <button id="publishBtn" style="display:none;">📤 Publiceer</button>
   </div>
 
-
   <div id="accordion-root"></div>
 </div>
-
 
 <!-- MODAL VOOR COMPONENT BEWERKEN / TOEVOEGEN -->
 <div id="modal-overlay" class="modal-overlay" style="display:none;">
@@ -398,7 +381,6 @@
     </div>
   </div>
 </div>
-
 
 <!-- MODAL VOOR ONDERWERPEN BEHEER -->
 <div id="topic-overlay" class="topic-overlay" style="display:none;">
@@ -413,7 +395,6 @@
     </div>
   </div>
 </div>
-
 
 <!-- MODAL VOOR LES TOEVOEGEN / BEWERKEN -->
 <div id="lesson-edit-overlay" class="lesson-edit-overlay" style="display:none;">
@@ -430,7 +411,6 @@
   </div>
 </div>
 
-
 <script>
   // ---------- FIREBASE CONFIG ----------
   const firebaseConfig = {
@@ -438,27 +418,22 @@
     authDomain: "speeltuin-recherche.firebaseapp.com",
     databaseURL: "https://speeltuin-recherche-default-rtdb.europe-west1.firebasedatabase.app",
     projectId: "speeltuin-recherche",
-    storageBucket: "speeltuin-recherche.firebasestorage.app",
     messagingSenderId: "499912834123",
     appId: "1:499912834123:web:3c84cbf4d5eb13131961ce"
   };
   firebase.initializeApp(firebaseConfig);
   const db = firebase.database();
-  const storage = firebase.storage();
-
 
   // ---------- MODE DETECTIE ----------
   const urlParams = new URLSearchParams(window.location.search);
   const mode = urlParams.get('mode') || 'view';
   const isDocentMode = (mode === 'edit');
 
-
   const modeIndicator = document.getElementById('modeIndicator');
   const switchBtn = document.getElementById('switchModeBtn');
   const manageTopicsBtn = document.getElementById('manageTopicsBtn');
   const publishBtn = document.getElementById('publishBtn');
   const fullscreenBtn = document.getElementById('fullscreenBtn');
-
 
   if (isDocentMode) {
     modeIndicator.textContent = '👨‍🏫 Docent (bewerken)';
@@ -480,7 +455,6 @@
     }
   }
 
-
   // ---------- FULLSCREEN KNOP ----------
   fullscreenBtn.addEventListener('click', function() {
     if (!document.fullscreenElement) {
@@ -492,7 +466,6 @@
     }
   });
 
-
   document.addEventListener('fullscreenchange', function() {
     if (document.fullscreenElement) {
       fullscreenBtn.textContent = '⛶ Verlaat volledig scherm';
@@ -500,7 +473,6 @@
       fullscreenBtn.textContent = '⛶ Volledig scherm';
     }
   });
-
 
   // ---------- SCHAKELKNOP ----------
   switchBtn.addEventListener('click', function() {
@@ -513,7 +485,6 @@
       window.location.href = currentUrl + separator + 'mode=edit';
     }
   });
-
 
   // ---------- GEBRUIKERSNAAM ----------
   let currentUserName = localStorage.getItem('politieacademie_naam') || '';
@@ -530,7 +501,6 @@
     }
   });
 
-
   // ---------- DEFAULT DATA ----------
   function getDefaultTopics() {
     return [
@@ -541,7 +511,6 @@
       { id: 'topic_5', title: '5. Kwaliteitscheck 3F' }
     ];
   }
-
 
   function getDefaultLessons() {
     return {
@@ -573,10 +542,9 @@
     };
   }
 
-
   // ---------- STATE ----------
-  let topics = [];              // array van {id, title}
-  let lessons = {};            // object: topicId -> array van {id, title, goals, components: [...]}
+  let topics = [];              
+  let lessons = {};            
   let editingTopicIndex = null;
   let editingLessonTopicId = null;
   let editingLessonIndex = null;
@@ -584,7 +552,6 @@
   let currentLessonIdForComponent = null;
   let currentComponentIndex = null;
   let modalMode = 'add';
-
 
   // ---------- COMPONENT TYPES ----------
   const componentTypes = [
@@ -599,12 +566,10 @@
     { value: 'iframe', label: 'Iframe (externe pagina)' }
   ];
 
-
   // ---------- LOAD DATA ----------
   function loadData() {
     const topicsRef = db.ref('topics');
     const lessonsRef = db.ref(isDocentMode ? 'draftLessons' : 'publishedLessons');
-
 
     topicsRef.on('value', (snapshot) => {
       let topicsVal = snapshot.val();
@@ -612,13 +577,11 @@
         const defaultTopics = getDefaultTopics();
         topicsRef.set(defaultTopics);
         topicsVal = defaultTopics;
-        // Ook default lessen aanmaken
         const defaultLessons = getDefaultLessons();
         lessonsRef.set(defaultLessons);
       }
       topics = topicsVal;
       renderAccordion();
-
 
       lessonsRef.on('value', (snap) => {
         const val = snap.val();
@@ -631,11 +594,9 @@
           lessons = empty;
         }
         renderAllComponents();
-        loadAllFeeds();
       });
     });
   }
-
 
   // ---------- RENDER ACCORDION ----------
   function renderAccordion() {
@@ -648,25 +609,20 @@
       header.onclick = () => toggleAccordion(header, topic.id);
       const panel = document.createElement('div'); panel.className = 'accordion-panel'; panel.id = `panel-${topic.id}`;
       
-      // Lessen container
       const lessonContainer = document.createElement('div');
       lessonContainer.id = `lessons-${topic.id}`;
       panel.appendChild(lessonContainer);
 
-
       if (isDocentMode) {
-        // Knop om een les toe te voegen binnen dit onderwerp
         const addLessonDiv = document.createElement('div');
         addLessonDiv.style.marginTop = '15px';
         addLessonDiv.innerHTML = `<button onclick="openAddLessonModal('${topic.id}')" style="padding:8px 16px; background:#f7c948; color:#0a1e3f; border:none; border-radius:12px; font-weight:600; cursor:pointer;">➕ Les toevoegen</button>`;
         panel.appendChild(addLessonDiv);
       }
 
-
       item.appendChild(header); item.appendChild(panel); root.appendChild(item);
     });
   }
-
 
   function toggleAccordion(header, topicId) {
     const panel = document.getElementById(`panel-${topicId}`);
@@ -675,7 +631,6 @@
     document.querySelectorAll('.accordion-header').forEach(h => h.classList.remove('active'));
     if (!isOpen) { panel.classList.add('open'); header.classList.add('active'); }
   }
-
 
   // ---------- RENDER LESSEN EN COMPONENTEN ----------
   function renderAllComponents() {
@@ -688,7 +643,6 @@
         const lessonDiv = document.createElement('div');
         lessonDiv.className = 'lesson-container';
         
-        // Header
         const headerDiv = document.createElement('div');
         headerDiv.className = 'lesson-header';
         headerDiv.innerHTML = `<h4>${escapeHtml(lesson.title)}</h4>`;
@@ -703,8 +657,6 @@
         }
         lessonDiv.appendChild(headerDiv);
 
-
-        // Doelen
         if (lesson.goals) {
           const goalsDiv = document.createElement('div');
           goalsDiv.className = 'lesson-goals';
@@ -712,8 +664,6 @@
           lessonDiv.appendChild(goalsDiv);
         }
 
-
-        // Componenten
         const compContainer = document.createElement('div');
         compContainer.className = 'component-container';
         compContainer.id = `components-${topic.id}-${lesson.id}`;
@@ -725,7 +675,6 @@
           renderComponentContent(contentDiv, comp, topic.id, lesson.id);
           item.appendChild(contentDiv);
 
-
           if (isDocentMode) {
             const actions = document.createElement('div'); actions.className = 'actions';
             const toggleBtn = document.createElement('button'); toggleBtn.className = 'toggle' + (comp.active !== false ? ' on' : ''); toggleBtn.textContent = comp.active !== false ? 'Aan' : 'Uit'; toggleBtn.onclick = () => toggleComponent(topic.id, lesson.id, compIndex);
@@ -736,13 +685,10 @@
             item.appendChild(actions);
           }
 
-
           compContainer.appendChild(item);
         });
         lessonDiv.appendChild(compContainer);
 
-
-        // Toevoeggebied voor componenten (alleen docent)
         if (isDocentMode) {
           const addArea = document.createElement('div');
           addArea.className = 'add-component-area';
@@ -750,14 +696,12 @@
           lessonDiv.appendChild(addArea);
         }
 
-
         container.appendChild(lessonDiv);
       });
     });
   }
 
-
-  // ---------- RENDER COMPONENT CONTENT (met lessonId) ----------
+  // ---------- RENDER COMPONENT CONTENT ----------
   function renderComponentContent(container, comp, topicId, lessonId) {
     container.innerHTML = '';
     switch(comp.type) {
@@ -809,21 +753,21 @@
         if (!fileUrl) {
           container.innerHTML = `<p style="color:#94a3b8;">Geen bestand geüpload.</p>`;
         } else {
-          const ext = fileName.split('.').pop().toLowerCase();
-          const imageExts = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp', 'svg'];
+          const isImage = fileUrl.startsWith('data:image/') || /\.(jpg|jpeg|png|gif|webp|svg)$/i.test(fileName);
+          const isPdf = fileUrl.startsWith('data:application/pdf') || /\.pdf$/i.test(fileName);
           let previewHtml = '';
-          if (imageExts.includes(ext)) {
-            previewHtml = `<img src="${escapeHtml(fileUrl)}" alt="${escapeHtml(fileName)}" style="max-width:100%; max-height:450px; border-radius:8px; display:block; margin:0 auto;">`;
-          } else if (ext === 'pdf') {
-            previewHtml = `<iframe src="${escapeHtml(fileUrl)}" style="width:100%; height:500px; border:none; border-radius:8px;"></iframe>`;
+          if (isImage) {
+            previewHtml = `<img src="${fileUrl}" alt="${escapeHtml(fileName)}" style="max-width:100%; max-height:450px; border-radius:8px; display:block; margin:0 auto;">`;
+          } else if (isPdf) {
+            previewHtml = `<iframe src="${fileUrl}" style="width:100%; height:500px; border:none; border-radius:8px;"></iframe>`;
           } else {
-            previewHtml = `<div style="padding: 20px; text-align: center;"><a href="${escapeHtml(fileUrl)}" target="_blank" download="${escapeHtml(fileName)}" style="display:inline-block; padding:10px 20px; background:#f7c948; color:#0a1e3f; border-radius:8px; text-decoration:none; font-weight:600;">📥 Download ${escapeHtml(fileName)}</a></div>`;
+            previewHtml = `<div style="padding: 20px; text-align: center;"><a href="${fileUrl}" download="${escapeHtml(fileName)}" style="display:inline-block; padding:10px 20px; background:#f7c948; color:#0a1e3f; border-radius:8px; text-decoration:none; font-weight:600;">📥 Download ${escapeHtml(fileName)}</a></div>`;
           }
           container.innerHTML = `
             <div class="file-window">
               <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #e2e8f0; padding-bottom:8px; margin-bottom:12px;">
                 <span style="font-weight:700; color:#0a1e3f; display:flex; align-items:center; gap:6px;">📁 ${escapeHtml(fileName)}</span>
-                <a href="${escapeHtml(fileUrl)}" target="_blank" style="font-size:0.85rem; color:#1a4b8c; text-decoration:none; font-weight:600;">↗ Openen</a>
+                <a href="${fileUrl}" download="${escapeHtml(fileName)}" style="font-size:0.85rem; color:#1a4b8c; text-decoration:none; font-weight:600;">📥 Downloaden</a>
               </div>
               <div class="file-preview">
                 ${previewHtml}
@@ -848,7 +792,6 @@
     }
   }
 
-
   // ---------- TOGGLE COMPONENT ----------
   function toggleComponent(topicId, lessonId, compIndex) {
     if (!isDocentMode) return;
@@ -860,8 +803,7 @@
     saveLessonComponents(topicId, lessonId);
   }
 
-
-  // ---------- LIVE FEEDS (aangepast met lessonId) ----------
+  // ---------- LIVE FEEDS ----------
   function listenToAnswers(topicId, lessonId, compId) {
     db.ref(`answers/${topicId}/${lessonId}/${compId}`).on('value', (sn) => {
       const val = sn.val(); const el = document.getElementById(`antwoord-lijst-${compId}`);
@@ -878,7 +820,6 @@
     db.ref(`answers/${topicId}/${lessonId}/${compId}`).push({ antwoord: txt, timestamp: Date.now() });
     input.value = '';
   }
-
 
   function listenToVorigeLes(topicId, lessonId, compId) {
     db.ref(`vorigeLes/${topicId}/${lessonId}/${compId}`).on('value', (sn) => {
@@ -897,8 +838,7 @@
     input.value = '';
   }
 
-
-  // ---------- TEKENBORD (aangepast met lessonId) ----------
+  // ---------- TEKENBORD ----------
   let drawingState = {};
   function initDrawing(topicId, lessonId, compId) {
     const canvas = document.getElementById(`canvas-${compId}`);
@@ -906,7 +846,6 @@
     const ctx = canvas.getContext('2d');
     const key = `${topicId}-${lessonId}-${compId}`;
     drawingState[key] = { canvas, ctx, isDrawing: false };
-
 
     db.ref(`drawings/${topicId}/${lessonId}/${compId}`).on('value', (sn) => {
       if (drawingState[key].isDrawing) return;
@@ -923,7 +862,6 @@
       }
     });
 
-
     const startDraw = (x, y) => {
       ctx.beginPath();
       ctx.moveTo(x, y);
@@ -939,7 +877,6 @@
       saveDrawing(topicId, lessonId, compId);
     };
 
-
     canvas.addEventListener('mousedown', (e) => {
       const r = canvas.getBoundingClientRect();
       startDraw((e.clientX - r.left) * (canvas.width / r.width), (e.clientY - r.top) * (canvas.height / r.height));
@@ -951,7 +888,6 @@
     });
     canvas.addEventListener('mouseup', endDraw);
     canvas.addEventListener('mouseleave', endDraw);
-
 
     canvas.addEventListener('touchstart', (e) => {
       e.preventDefault();
@@ -969,14 +905,12 @@
     canvas.addEventListener('touchend', endDraw);
   }
 
-
   function saveDrawing(topicId, lessonId, compId) {
     const key = `${topicId}-${lessonId}-${compId}`;
     const state = drawingState[key];
     if (!state) return;
     db.ref(`drawings/${topicId}/${lessonId}/${compId}`).set(state.canvas.toDataURL('image/png'));
   }
-
 
   function clearDrawing(topicId, lessonId, compId) {
     const key = `${topicId}-${lessonId}-${compId}`;
@@ -986,37 +920,15 @@
     db.ref(`drawings/${topicId}/${lessonId}/${compId}`).remove();
   }
 
-
-  function loadAllFeeds() { /* done by listeners */ }
-
-
-  // ---------- BESTANDSUPLOAD ----------
-  function uploadFile(file, topicId, lessonId, compId) {
+  // ---------- BESTAND NAAR BASE64 OMZETTEN ----------
+  function fileToBase64(file) {
     return new Promise((resolve, reject) => {
-      if (!file) reject('Geen bestand geselecteerd.');
-      if (file.size > 10 * 1024 * 1024) {
-        reject('Bestand is groter dan 10 MB.');
-        return;
-      }
-      const storageRef = storage.ref(`uploads/${topicId}/${lessonId}/${compId}/${file.name}`);
-      const uploadTask = storageRef.put(file);
-      uploadTask.on('state_changed',
-        (snapshot) => {
-          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          console.log('Upload is ' + progress + '% done');
-        },
-        (error) => {
-          reject(error);
-        },
-        () => {
-          uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
-            resolve(downloadURL);
-          }).catch(reject);
-        }
-      );
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = error => reject(error);
     });
   }
-
 
   // ---------- MODAL FUNCTIES (componenten) ----------
   function openAddComponentModal(topicId, lessonId) {
@@ -1028,7 +940,6 @@
     const type = document.getElementById(`type-select-${topicId}-${lessonId}`).value;
     openComponentModalForType(type, null);
   }
-
 
   function openEditComponentModal(topicId, lessonId, compIndex) {
     if (!isDocentMode) return;
@@ -1048,7 +959,6 @@
     }
     openComponentModalForType(comp.type, comp);
   }
-
 
   function openComponentModalForType(type, existing) {
     const overlay = document.getElementById('modal-overlay'); const title = document.getElementById('modal-title'); const form = document.getElementById('modal-form');
@@ -1084,11 +994,11 @@
       case 'file':
         const fileName = existing ? existing.fileName || '' : '';
         const fileUrl = existing ? existing.fileURL || '' : '';
-        html += `<label>Bestand</label>
-        <input type="file" id="modal-file" accept=".jpg,.jpeg,.png,.gif,.bmp,.webp,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.rtf" style="width:100%; padding:10px 14px; border:1px solid #e2e8f0; border-radius:12px;">
-        ${fileUrl ? `<p style="margin-top:8px; color:#64748b;">Huidig bestand: <a href="${escapeHtml(fileUrl)}" target="_blank">${escapeHtml(fileName)}</a></p>` : ''}
+        html += `<label>Selecteer bestand</label>
+        <input type="file" id="modal-file" style="width:100%; padding:10px 14px; border:1px solid #e2e8f0; border-radius:12px;">
+        ${fileUrl ? `<p style="margin-top:8px; color:#64748b;">Huidig bestand: <strong>${escapeHtml(fileName)}</strong></p>` : ''}
         <div id="file-preview-modal" style="margin-top:8px;"></div>
-        <p style="font-size:0.9rem;color:#64748b;margin-top:4px;">Max 10 MB. Toegestane types: afbeeldingen, PDF, Office documenten, tekst.</p>`;
+        <p style="font-size:0.9rem;color:#64748b;margin-top:4px;">Aanbevolen maximale grootte: 5 MB (afbeeldingen, PDF, etc.).</p>`;
         break;
       case 'iframe':
         const iframeUrl = existing ? existing.iframeUrl || '' : '';
@@ -1101,8 +1011,6 @@
     html += `<label style="margin-top:15px;"><input type="checkbox" id="modal-active" ${existing && existing.active === false ? '' : 'checked'}> Component actief</label>`;
     form.innerHTML = html; overlay.style.display = 'flex';
 
-
-    // Event listener voor bestand preview in modal
     if (type === 'file') {
       const fileInput = document.getElementById('modal-file');
       if (fileInput) {
@@ -1110,21 +1018,21 @@
           const file = e.target.files[0];
           const previewDiv = document.getElementById('file-preview-modal');
           if (file) {
-            if (file.size > 10 * 1024 * 1024) {
-              previewDiv.innerHTML = '<p style="color:#ef4444;">Bestand is te groot (max 10 MB).</p>';
+            if (file.size > 5 * 1024 * 1024) {
+              previewDiv.innerHTML = '<p style="color:#ef4444;">Bestand is te groot (max 5 MB aanbevolen).</p>';
               return;
             }
             const reader = new FileReader();
             reader.onload = function(event) {
               const dataUrl = event.target.result;
-              const ext = file.name.split('.').pop().toLowerCase();
-              const imageExts = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp', 'svg'];
-              if (imageExts.includes(ext)) {
+              const isImage = file.type.startsWith('image/');
+              const isPdf = file.type === 'application/pdf';
+              if (isImage) {
                 previewDiv.innerHTML = `<img src="${dataUrl}" style="max-width:100%; max-height:200px; border-radius:12px;">`;
-              } else if (ext === 'pdf') {
-                previewDiv.innerHTML = `<iframe src="${dataUrl}" style="width:100%; height:300px; border:none; border-radius:12px;"></iframe>`;
+              } else if (isPdf) {
+                previewDiv.innerHTML = `<iframe src="${dataUrl}" style="width:100%; height:250px; border:none; border-radius:12px;"></iframe>`;
               } else {
-                previewDiv.innerHTML = `<p>📄 ${escapeHtml(file.name)} (${(file.size/1024).toFixed(0)} KB)</p>`;
+                previewDiv.innerHTML = `<p style="font-size:0.9rem; color:#334155;">📄 <strong>${escapeHtml(file.name)}</strong> (${(file.size/1024).toFixed(0)} KB)</p>`;
               }
             };
             reader.readAsDataURL(file);
@@ -1136,9 +1044,7 @@
     }
   }
 
-
   function closeModal() { document.getElementById('modal-overlay').style.display = 'none'; }
-
 
   function saveModal() {
     if (!isDocentMode) return;
@@ -1159,22 +1065,30 @@
         const fileInput = document.getElementById('modal-file');
         if (fileInput && fileInput.files.length > 0) {
           const file = fileInput.files[0];
+          if (file.size > 5 * 1024 * 1024) {
+            alert('Het bestand is groter dan 5 MB. Kies een kleiner bestand.');
+            return;
+          }
           const saveBtn = document.querySelector('#modal-overlay .btn-save');
-          saveBtn.disabled = true;
-          saveBtn.textContent = 'Uploaden...';
-          uploadFile(file, currentTopicIdForComponent, currentLessonIdForComponent, currentComponentIndex || 'new')
-            .then(downloadURL => {
-              newComp.fileURL = downloadURL;
+          if (saveBtn) {
+            saveBtn.disabled = true;
+            saveBtn.textContent = 'Verwerken...';
+          }
+          fileToBase64(file)
+            .then(dataUrl => {
+              newComp.fileURL = dataUrl;
               newComp.fileName = file.name;
               finishSaveComponent(newComp);
             })
             .catch(error => {
-              alert('Fout bij uploaden: ' + error.message);
-              saveBtn.disabled = false;
-              saveBtn.textContent = 'Opslaan';
+              alert('Fout bij verwerken bestand: ' + error);
+              if (saveBtn) {
+                saveBtn.disabled = false;
+                saveBtn.textContent = 'Opslaan';
+              }
             });
-          return; // wacht op upload
-        } else if (modalMode === 'edit' && document.getElementById('modal-file').files.length === 0) {
+          return;
+        } else if (modalMode === 'edit') {
           const existingComp = lessons[currentTopicIdForComponent]?.find(l => l.id === currentLessonIdForComponent)?.components[currentComponentIndex];
           if (existingComp) {
             newComp.fileURL = existingComp.fileURL;
@@ -1193,7 +1107,6 @@
     finishSaveComponent(newComp);
   }
 
-
   // ---------- FINISH SAVE COMPONENT ----------
   function finishSaveComponent(newComp) {
     newComp.active = document.getElementById('modal-active').checked;
@@ -1203,19 +1116,16 @@
     const topicId = currentTopicIdForComponent;
     const lessonId = currentLessonIdForComponent;
     if (!topicId || !lessonId) {
-      console.error('Geen topicId of lessonId');
       alert('Er is een fout opgetreden. Probeer de pagina te verversen.');
       return;
     }
     const topicLessons = lessons[topicId];
     if (!topicLessons) {
-      console.error('Topic niet gevonden:', topicId);
       alert('Topic niet gevonden.');
       return;
     }
     const lesson = topicLessons.find(l => l.id === lessonId);
     if (!lesson) {
-      console.error('Les niet gevonden:', lessonId);
       alert('Les niet gevonden.');
       return;
     }
@@ -1242,7 +1152,6 @@
     closeModal();
   }
 
-
   // ---------- SAVE LESSON COMPONENTS ----------
   function saveLessonComponents(topicId, lessonId) {
     const lesson = lessons[topicId]?.find(l => l.id === lessonId);
@@ -1255,7 +1164,6 @@
     });
   }
 
-
   function deleteComponent(topicId, lessonId, compIndex) {
     if (!isDocentMode) return;
     if (!confirm('Weet je zeker dat je dit component wilt verwijderen?')) return;
@@ -1266,15 +1174,10 @@
       if (comp.type === 'vraag') db.ref(`answers/${topicId}/${lessonId}/${comp.id}`).remove();
       if (comp.type === 'tekenbord') db.ref(`drawings/${topicId}/${lessonId}/${comp.id}`).remove();
       if (comp.type === 'vorige-les') db.ref(`vorigeLes/${topicId}/${lessonId}/${comp.id}`).remove();
-      if (comp.type === 'file' && comp.fileURL) {
-        const storageRef = storage.refFromURL(comp.fileURL);
-        storageRef.delete().catch(err => console.warn('Kon bestand niet verwijderen:', err));
-      }
     }
     lesson.components.splice(compIndex, 1);
     saveLessonComponents(topicId, lessonId);
   }
-
 
   // ---------- LESSEN BEHEER ----------
   function openAddLessonModal(topicId) {
@@ -1286,7 +1189,6 @@
     document.getElementById('lesson-edit-overlay').style.display = 'flex';
   }
 
-
   function openEditLessonModal(topicId, lessonIndex) {
     editingLessonTopicId = topicId;
     editingLessonIndex = lessonIndex;
@@ -1297,23 +1199,16 @@
     document.getElementById('lesson-edit-overlay').style.display = 'flex';
   }
 
-
   function closeLessonEditModal() {
     document.getElementById('lesson-edit-overlay').style.display = 'none';
     editingLessonTopicId = null;
     editingLessonIndex = null;
   }
 
-
   function saveLesson() {
-    console.log("saveLesson gestart");
     const titleInput = document.getElementById('lesson-edit-title-input');
     const goalsInput = document.getElementById('lesson-edit-goals-input');
-    if (!titleInput || !goalsInput) {
-      console.error("Elementen niet gevonden!");
-      alert("Er is een fout in de HTML. Neem contact op met de beheerder.");
-      return;
-    }
+    if (!titleInput || !goalsInput) return;
     const title = titleInput.value.trim();
     const goals = goalsInput.value.trim();
     if (!title) {
@@ -1321,12 +1216,7 @@
       return;
     }
     const topicId = editingLessonTopicId;
-    if (!topicId) {
-      console.error("Geen topicId");
-      alert("Er is een fout. Probeer de pagina te verversen.");
-      return;
-    }
-
+    if (!topicId) return;
 
     if (editingLessonIndex === null) {
       const newLesson = {
@@ -1337,25 +1227,16 @@
       };
       if (!lessons[topicId]) lessons[topicId] = [];
       lessons[topicId].push(newLesson);
-      console.log("Nieuwe les toegevoegd:", newLesson);
     } else {
       const lesson = lessons[topicId][editingLessonIndex];
-      if (!lesson) {
-        console.error("Les niet gevonden op index", editingLessonIndex);
-        alert("Les niet gevonden.");
-        return;
-      }
+      if (!lesson) return;
       lesson.title = title;
       lesson.goals = goals;
-      console.log("Les bijgewerkt:", lesson);
     }
-
 
     const dataRef = db.ref(isDocentMode ? 'draftLessons' : 'publishedLessons');
     const updateObj = {};
     updateObj[topicId] = lessons[topicId];
-    console.log("Updaten Firebase:", updateObj);
-
 
     const saveBtn = document.querySelector('#lesson-edit-overlay .btn-save');
     if (saveBtn) {
@@ -1363,10 +1244,8 @@
       saveBtn.textContent = 'Bezig met opslaan...';
     }
 
-
     dataRef.update(updateObj)
       .then(() => {
-        console.log("Succesvol opgeslagen");
         if (saveBtn) {
           saveBtn.disabled = false;
           saveBtn.textContent = 'Opslaan';
@@ -1374,7 +1253,6 @@
         closeLessonEditModal();
       })
       .catch((error) => {
-        console.error("Fout bij opslaan:", error);
         alert("Fout bij opslaan: " + error.message);
         if (saveBtn) {
           saveBtn.disabled = false;
@@ -1382,7 +1260,6 @@
         }
       });
   }
-
 
   function deleteLesson(topicId, lessonIndex) {
     if (!confirm('Weet je zeker dat je deze les wilt verwijderen? Alle bijbehorende componenten en data gaan verloren.')) return;
@@ -1392,10 +1269,6 @@
       if (comp.type === 'vraag') db.ref(`answers/${topicId}/${lesson.id}/${comp.id}`).remove();
       if (comp.type === 'tekenbord') db.ref(`drawings/${topicId}/${lesson.id}/${comp.id}`).remove();
       if (comp.type === 'vorige-les') db.ref(`vorigeLes/${topicId}/${lesson.id}/${comp.id}`).remove();
-      if (comp.type === 'file' && comp.fileURL) {
-        const storageRef = storage.refFromURL(comp.fileURL);
-        storageRef.delete().catch(err => console.warn('Kon bestand niet verwijderen:', err));
-      }
     });
     lessons[topicId].splice(lessonIndex, 1);
     const dataRef = db.ref(isDocentMode ? 'draftLessons' : 'publishedLessons');
@@ -1404,14 +1277,12 @@
     dataRef.update(updateObj);
   }
 
-
   // ---------- ONDERWERPEN BEHEER ----------
   document.getElementById('manageTopicsBtn').addEventListener('click', function() {
     if (!isDocentMode) return;
     renderTopicList();
     document.getElementById('topic-overlay').style.display = 'flex';
   });
-
 
   function renderTopicList() {
     const container = document.getElementById('topic-list-container');
@@ -1429,14 +1300,12 @@
     });
   }
 
-
   function openAddTopicModal() {
     editingTopicIndex = null;
     document.getElementById('topic-edit-title').textContent = 'Onderwerp toevoegen';
     document.getElementById('topic-edit-title-input').value = '';
     document.getElementById('topic-edit-overlay').style.display = 'flex';
   }
-
 
   function openEditTopicModal(index) {
     editingTopicIndex = index;
@@ -1446,12 +1315,10 @@
     document.getElementById('topic-edit-overlay').style.display = 'flex';
   }
 
-
   function closeTopicEditModal() {
     document.getElementById('topic-edit-overlay').style.display = 'none';
     editingTopicIndex = null;
   }
-
 
   function saveTopic() {
     const title = document.getElementById('topic-edit-title-input').value.trim();
@@ -1472,7 +1339,6 @@
     renderTopicList();
   }
 
-
   function deleteTopic(index) {
     const topic = topics[index];
     if (!confirm(`Weet je zeker dat je het onderwerp "${topic.title}" wilt verwijderen? Alle bijbehorende lessen en data gaan verloren.`)) return;
@@ -1487,11 +1353,9 @@
     renderTopicList();
   }
 
-
   function closeTopicModal() {
     document.getElementById('topic-overlay').style.display = 'none';
   }
-
 
   // ---------- PUBLICATIE ----------
   document.getElementById('publishBtn').addEventListener('click', function() {
@@ -1508,11 +1372,9 @@
     alert('✅ Gepubliceerd! Studenten zien nu de bijgewerkte versie.');
   });
 
-
   // ---------- INIT ----------
   document.addEventListener('DOMContentLoaded', loadData);
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
-
 
   function escapeHtml(text) { if (!text) return ''; const map = { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;' }; return text.replace(/[&<>"']/g, m => map[m]); }
 </script>
