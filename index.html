@@ -279,31 +279,31 @@
     }
 
     /* MODALS */
-    .modal-overlay, .name-overlay, .topic-overlay, .lesson-edit-overlay {
+    .modal-overlay, .name-overlay, .topic-overlay, .lesson-edit-overlay, .topic-edit-overlay {
       position: fixed; top: 0; left: 0; right: 0; bottom: 0;
       background: rgba(10, 30, 63, 0.6); backdrop-filter: blur(6px);
       display: flex; justify-content: center; align-items: center; z-index: 2000;
     }
-    .modal, .name-modal, .topic-modal, .lesson-edit-modal {
+    .modal, .name-modal, .topic-modal, .lesson-edit-modal, .topic-edit-modal {
       background: #ffffff; padding: 35px; border-radius: 28px; width: 90%; max-width: 600px;
       box-shadow: 0 25px 50px rgba(0,0,0,0.2); animation: slideUp 0.3s ease;
       border: 1px solid rgba(255,255,255,0.5);
     }
     @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-    .modal h3, .name-modal h3, .topic-modal h3, .lesson-edit-modal h3 { margin-bottom: 20px; font-size: 1.4rem; color: #0f172a; }
-    .modal label, .name-modal label, .topic-modal label, .lesson-edit-modal label { display: block; margin: 16px 0 6px; font-weight: 600; color: #334155; }
-    .modal input, .modal textarea, .name-modal input, .topic-modal input, .lesson-edit-modal input, .lesson-edit-modal textarea {
+    .modal h3, .name-modal h3, .topic-modal h3, .lesson-edit-modal h3, .topic-edit-modal h3 { margin-bottom: 20px; font-size: 1.4rem; color: #0f172a; }
+    .modal label, .name-modal label, .topic-modal label, .lesson-edit-modal label, .topic-edit-modal label { display: block; margin: 16px 0 6px; font-weight: 600; color: #334155; }
+    .modal input, .modal textarea, .name-modal input, .topic-modal input, .lesson-edit-modal input, .lesson-edit-modal textarea, .topic-edit-modal input {
       width: 100%; padding: 10px 14px; border: 1px solid #e2e8f0; border-radius: 12px; font-size: 1rem; background: #f8fafc; transition: 0.2s;
     }
-    .modal input:focus, .modal textarea:focus, .lesson-edit-modal input:focus, .lesson-edit-modal textarea:focus {
+    .modal input:focus, .modal textarea:focus, .lesson-edit-modal input:focus, .lesson-edit-modal textarea:focus, .topic-edit-modal input:focus {
       border-color: #f7c948; box-shadow: 0 0 0 3px rgba(247,201,72,0.2); background: #fff; outline: none;
     }
-    .modal .buttons, .topic-modal .buttons, .lesson-edit-modal .buttons { display: flex; justify-content: flex-end; gap: 12px; margin-top: 25px; }
-    .modal .buttons button, .topic-modal .buttons button, .lesson-edit-modal .buttons button { padding: 10px 28px; border: none; border-radius: 12px; font-weight: 600; cursor: pointer; transition: 0.2s; }
-    .modal .btn-cancel, .topic-modal .btn-cancel, .lesson-edit-modal .btn-cancel { background: #f1f5f9; color: #475569; }
-    .modal .btn-cancel:hover, .topic-modal .btn-cancel:hover, .lesson-edit-modal .btn-cancel:hover { background: #e2e8f0; }
-    .modal .btn-save, .topic-modal .btn-save, .lesson-edit-modal .btn-save { background: #f7c948; color: #0a1e3f; }
-    .modal .btn-save:hover, .topic-modal .btn-save:hover, .lesson-edit-modal .btn-save:hover { background: #e5b840; transform: translateY(-1px); }
+    .modal .buttons, .topic-modal .buttons, .lesson-edit-modal .buttons, .topic-edit-modal .buttons { display: flex; justify-content: flex-end; gap: 12px; margin-top: 25px; }
+    .modal .buttons button, .topic-modal .buttons button, .lesson-edit-modal .buttons button, .topic-edit-modal .buttons button { padding: 10px 28px; border: none; border-radius: 12px; font-weight: 600; cursor: pointer; transition: 0.2s; }
+    .modal .btn-cancel, .topic-modal .btn-cancel, .lesson-edit-modal .btn-cancel, .topic-edit-modal .btn-cancel { background: #f1f5f9; color: #475569; }
+    .modal .btn-cancel:hover, .topic-modal .btn-cancel:hover, .lesson-edit-modal .btn-cancel:hover, .topic-edit-modal .btn-cancel:hover { background: #e2e8f0; }
+    .modal .btn-save, .topic-modal .btn-save, .lesson-edit-modal .btn-save, .topic-edit-modal .btn-save { background: #f7c948; color: #0a1e3f; }
+    .modal .btn-save:hover, .topic-modal .btn-save:hover, .lesson-edit-modal .btn-save:hover, .topic-edit-modal .btn-save:hover { background: #e5b840; transform: translateY(-1px); }
     .name-modal button { padding: 10px 28px; border: none; border-radius: 12px; font-weight: 600; cursor: pointer; background: #f7c948; color: #0a1e3f; }
     .name-modal button:hover { background: #e5b840; }
 
@@ -317,15 +317,17 @@
     }
     .topic-list-item:last-child { border-bottom: none; }
     .topic-list-item .titel { font-weight: 500; flex: 1; }
-    .topic-list-item .acties { display: flex; gap: 8px; }
+    .topic-list-item .acties { display: flex; gap: 4px; }
     .topic-list-item .acties button {
       background: transparent; border: none; cursor: pointer; font-size: 0.9rem;
-      padding: 4px 8px; border-radius: 6px; transition: 0.2s;
+      padding: 4px 6px; border-radius: 6px; transition: 0.2s;
     }
     .topic-list-item .acties .delete { color: #ef4444; }
     .topic-list-item .acties .delete:hover { background: #fee2e2; }
     .topic-list-item .acties .edit { color: #0a1e3f; }
     .topic-list-item .acties .edit:hover { background: #f1f5f9; }
+    .topic-list-item .acties .up, .topic-list-item .acties .down { color: #475569; }
+    .topic-list-item .acties .up:hover, .topic-list-item .acties .down:hover { background: #e2e8f0; }
 
     @media (max-width: 600px) {
       .container { padding: 20px; }
@@ -392,6 +394,19 @@
     </div>
     <div class="buttons">
       <button class="btn-cancel" onclick="closeTopicModal()">Sluiten</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL VOOR ONDERWERP TOEVOEGEN / BEWERKEN -->
+<div id="topic-edit-overlay" class="topic-edit-overlay" style="display:none;">
+  <div class="topic-edit-modal">
+    <h3 id="topic-edit-title">Onderwerp toevoegen</h3>
+    <label>Titel</label>
+    <input type="text" id="topic-edit-title-input" placeholder="Bijv. Onderwerp 6">
+    <div class="buttons">
+      <button class="btn-cancel" onclick="closeTopicEditModal()">Annuleren</button>
+      <button class="btn-save" onclick="saveTopic()">Opslaan</button>
     </div>
   </div>
 </div>
@@ -1292,12 +1307,29 @@
       div.innerHTML = `
         <span class="titel">${escapeHtml(topic.title)}</span>
         <div class="acties">
+          <button class="up" onclick="moveTopicUp(${idx})" title="Omhoog">↑</button>
+          <button class="down" onclick="moveTopicDown(${idx})" title="Omlaag">↓</button>
           <button class="edit" onclick="openEditTopicModal(${idx})">✎</button>
           <button class="delete" onclick="deleteTopic(${idx})">✕</button>
         </div>
       `;
       container.appendChild(div);
     });
+  }
+
+  function moveTopicUp(index) {
+    if (index <= 0) return;
+    // Swap
+    [topics[index - 1], topics[index]] = [topics[index], topics[index - 1]];
+    db.ref('topics').set(topics);
+    renderTopicList();
+  }
+
+  function moveTopicDown(index) {
+    if (index >= topics.length - 1) return;
+    [topics[index + 1], topics[index]] = [topics[index], topics[index + 1]];
+    db.ref('topics').set(topics);
+    renderTopicList();
   }
 
   function openAddTopicModal() {
