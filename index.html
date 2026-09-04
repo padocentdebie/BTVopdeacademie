@@ -3,74 +3,381 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Elementen Selectie</title>
+    <title>Politieschool - Lessensysteem met Digibord</title>
     <style>
-        * { box-sizing: border-box; }
-        body { font-family: 'Segoe UI', sans-serif; margin: 0; background: #eef2f5; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
-        /* Keuzemenu / Tabs bovenaan */
-        .element-selector {
-            display: flex;
-            gap: 10px;
-            background: #ffffff;
-            padding: 12px 20px;
-            border-bottom: 2px solid #e0e0e0;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
         }
 
-        .element-btn {
-            padding: 10px 18px;
-            border: 2px solid #003082;
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
             background: white;
-            color: #003082;
-            font-weight: bold;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.2s ease;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
         }
 
-        .element-btn.active, .element-btn:hover {
-            background: #003082;
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 2em;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        /* Navigatie */
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .login-area { display: flex; align-items: center; gap: 10px; }
+
+        .role-badge {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
             color: white;
         }
 
-        /* Inhoudscontainers */
-        .element-view {
-            display: none;
+        .role-docent { background: #28a745; }
+        .role-student { background: #007bff; }
+
+        /* Knoppen */
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            margin: 5px 0;
+        }
+
+        .btn-primary { background: #667eea; color: white; }
+        .btn-primary:hover { background: #5a67d8; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+        .btn-success { background: #28a745; color: white; }
+        .btn-danger { background: #dc3545; color: white; }
+        .btn-warning { background: #ffc107; color: #333; }
+        .btn-info { background: #17a2b8; color: white; }
+        .btn-sm { padding: 6px 12px; font-size: 0.9em; }
+
+        /* Thema & Les kaarten */
+        .theme-card {
+            background: #ffffff;
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            padding: 12px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .theme-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: bold;
+            font-size: 1.05em;
+            color: #333;
+            margin-bottom: 8px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .theme-lessons { padding-left: 5px; margin-top: 8px; }
+
+        .lesson-card {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            transition: all 0.3s;
+        }
+
+        .lesson-card:hover { border-color: #667eea; box-shadow: 0 3px 10px rgba(0,0,0,0.1); }
+
+        .lesson-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+
+        .lesson-title { font-size: 1em; font-weight: bold; color: #333; }
+
+        .lesson-content {
+            min-height: 100px;
+            background: white;
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #eee;
+        }
+
+        /* Element types */
+        .element {
+            background: white;
+            border-radius: 8px;
+            padding: 10px;
+            margin: 10px 0;
+            border-left: 4px solid #667eea;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .element-type {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.85em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .type-tekst { background: #e3f2fd; color: #1565c0; }
+        .type-digibord { background: #f3e5f5; color: #7b1fa2; }
+        .type-iframe { background: #e8f5e9; color: #2e7d32; }
+        .type-afbeelding { background: #fff3e0; color: #e65100; }
+        .type-pdf { background: #fce4ec; color: #c2185b; }
+
+        .element-content { margin-top: 10px; padding: 15px; background: #fafafa; border-radius: 6px; }
+
+        .element-content textarea {
             width: 100%;
-            height: calc(100vh - 65px);
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            min-height: 80px;
+            resize: vertical;
+            font-family: inherit;
         }
 
-        .element-view.active {
-            display: block;
+        .element-content iframe {
+            width: 100%;
+            height: 600px;
+            border: none;
+            border-radius: 6px;
         }
 
-        /* Frame voor het Digibord */
-        iframe.digibord-frame {
+        .element-content img { max-width: 100%; height: auto; border-radius: 6px; }
+
+        /* Student view */
+        .student-view {
+            text-align: center;
+            padding: 50px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border: 2px dashed #ccc;
+            margin: 20px;
+        }
+
+        .waiting-animation {
+            font-size: 1.5em;
+            color: #666;
+            margin: 20px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.7; }
+            50% { opacity: 1; }
+            100% { opacity: 0.7; }
+        }
+
+        /* Modals */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
-            border: none;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
         }
 
-        .placeholder-box {
-            padding: 40px;
-            text-align: center;
-            color: #555;
+        .modal {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+
+        .modal h3 { margin-bottom: 20px; color: #333; }
+
+        .modal input, .modal select, .modal textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1em;
+        }
+
+        .modal-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        /* Dashboard */
+        .dashboard {
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 20px;
+            min-height: 700px;
+        }
+
+        .sidebar { background: #f8f9fa; padding: 20px; border-radius: 10px; }
+
+        .main-content { padding: 20px; }
+
+        .lesson-section-title {
+            font-size: 1.4em;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
 
-    <!-- Keuzemenu tussen elementen -->
-    <div class="element-selector">
-        <button class="element-btn active" onclick="showElement('digibord')">🖊️ Digibord Pro</button>
-        <button class="element-btn" onclick="showElement('element2')">📄 Element 2 (Tekst)</button>
-        <button class="element-btn" onclick="showElement('element3')">📊 Element 3 (Statistieken)</button>
+<div class="container">
+    <h1>🏛️ Politieschool - Lessensysteem</h1>
+    
+    <div class="nav">
+        <div class="login-area">
+            <button class="btn btn-primary" onclick="openDocentLoginModal()">👨‍🏫 Inloggen als Docent</button>
+            <input type="text" id="studentVoornaam" placeholder="Voornaam student..." style="padding: 8px 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 0.9em;">
+            <button class="btn btn-info" onclick="loginUser('student')">👮 Inloggen als Student</button>
+        </div>
+        <div id="userInfo"></div>
     </div>
 
-    <!-- Optie 1: Digibord Pro (Volledig intact) -->
-    <div id="digibord" class="element-view active">
-        <iframe class="digibord-frame" srcdoc='
+    <div id="docentDashboard" style="display: none;">
+        <div class="dashboard">
+            <div class="sidebar">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <h3>📂 Thema's & Lessen</h3>
+                </div>
+                <button class="btn btn-success" onclick="addThemeModal()" style="width: 100%; margin-bottom: 15px;">➕ Nieuw Thema</button>
+                <div id="themeList"></div>
+            </div>
+
+            <div class="main-content">
+                <div class="lesson-section-title" id="activeLessonTitle">Selecteer een les om te bewerken</div>
+                
+                <div id="lessonElements" class="lesson-content">
+                    <p style="text-align: center; color: #999; padding: 50px;">Selecteer een les uit een thema om de elementen te bekijken</p>
+                </div>
+
+                <div id="elementControls" style="display: none; margin-top: 20px; padding-top: 20px; border-top: 2px solid #ddd;">
+                    <h4>➕ Voeg element toe</h4>
+                    <select id="elementType" class="form-select" style="padding: 10px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 6px; width: 100%;">
+                        <option value="tekst">📝 Tekst</option>
+                        <option value="digibord">🖥️ Digibord Pro</option>
+                        <option value="iframe">🌐 iframe</option>
+                        <option value="afbeelding">🖼️ Afbeelding</option>
+                        <option value="pdf">📄 PDF</option>
+                    </select>
+                    <button class="btn btn-success" onclick="addElement()">Element toevoegen</button>
+                    <button class="btn btn-warning" onclick="startLesson()">🎯 Lesgeven</button>
+                </div>
+
+                <div id="docentLiveView" style="display: none; margin-top: 30px; padding: 20px; background: #f0fff0; border: 3px solid #28a745; border-radius: 10px;">
+                    <h2 style="color: #28a745; margin-bottom: 15px;">📺 Actieve Les (Wat de studenten nu zien)</h2>
+                    <div id="docentLiveContent"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="studentDashboard" style="display: none;">
+        <div class="student-view">
+            <h2>👮 Welkom <span id="studentWelcomeName">Student</span></h2>
+            <div id="studentLessonInfo">
+                <div class="waiting-animation">
+                    ⏳ Wachten tot de docent de les start...
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Inloggen Docent -->
+<div class="modal-overlay" id="docentLoginModal">
+    <div class="modal">
+        <h3>👨‍🏫 Docent Inloggen</h3>
+        <p style="margin-bottom: 15px; color: #666; font-size: 0.9em;">Voer het wachtwoord in om toegang te krijgen als docent.</p>
+        <input type="password" id="docentPassword" placeholder="Wachtwoord..." onkeyup="if(event.key === 'Enter') submitDocentLogin()">
+        <div id="docentLoginError" style="color: #dc3545; font-size: 0.9em; margin-bottom: 15px; display: none;">
+            ⚠️ Onjuist wachtwoord! Probeer het opnieuw.
+        </div>
+        <div class="modal-buttons">
+            <button class="btn btn-danger" onclick="closeModal('docentLoginModal')">Annuleren</button>
+            <button class="btn btn-success" onclick="submitDocentLogin()">Inloggen</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Nieuw Thema -->
+<div class="modal-overlay" id="addThemeModal">
+    <div class="modal">
+        <h3>📁 Nieuw Thema toevoegen</h3>
+        <input type="text" id="newThemeName" placeholder="Naam van het thema (bijv. Verkeer)">
+        <div class="modal-buttons">
+            <button class="btn btn-danger" onclick="closeModal('addThemeModal')">Annuleren</button>
+            <button class="btn btn-success" onclick="saveNewTheme()">Opslaan</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Nieuwe Les -->
+<div class="modal-overlay" id="addLessonModal">
+    <div class="modal">
+        <h3>➕ Nieuwe les toevoegen</h3>
+        <input type="text" id="newLessonName" placeholder="Naam van de les">
+        <div class="modal-buttons">
+            <button class="btn btn-danger" onclick="closeModal('addLessonModal')">Annuleren</button>
+            <button class="btn btn-success" onclick="saveNewLesson()">Opslaan</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Element Toevoegen -->
+<div class="modal-overlay" id="addElementModal">
+    <div class="modal">
+        <h3 id="elementModalTitle">Element toevoegen</h3>
+        <div id="elementInputArea"></div>
+        <div class="modal-buttons">
+            <button class="btn btn-danger" onclick="closeModal('addElementModal')">Annuleren</button>
+            <button class="btn btn-success" onclick="saveElement()">Opslaan</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ===== Digibord Pro HTML (als string, met placeholder voor room) =====
+    const DIGIBORD_HTML = `
 <!DOCTYPE html>
 <html lang="nl">
 <head>
@@ -141,7 +448,7 @@
     const ctx = canvas.getContext("2d");
     const statusLabel = document.getElementById("status");
     const trashZone = document.getElementById("trash-zone");
-    const currentClass = "Alpha";
+    const currentClass = "__ROOM__";
 
     let objects = {};
     let isDrawing = false, isDragging = false;
@@ -257,35 +564,598 @@
 <\/script>
 </body>
 </html>
-        '></iframe>
-    </div>
+`;
 
-    <!-- Optie 2: Ander Element -->
-    <div id="element2" class="element-view">
-        <div class="placeholder-box">
-            <h2>Element 2</h2>
-            <p>Hier komt de inhoud van een ander gekozen element.</p>
-        </div>
-    </div>
+    // ===== State management =====
+    let state = {
+        currentUser: null,
+        currentLesson: null,
+        currentTheme: null,
+        activeLesson: null,
+        selectedThemeIdForNewLesson: null,
+        themes: [
+            {
+                id: 1,
+                name: "Basisvaardigheden",
+                lessons: [
+                    {
+                        id: 101,
+                        name: "Introductie Politie",
+                        elements: [
+                            {
+                                id: 1001,
+                                type: "tekst",
+                                content: "Welkom bij de politieschool!\nDit is de introductieles.",
+                                timestamp: Date.now()
+                            },
+                            {
+                                id: 1002,
+                                type: "iframe",
+                                content: "https://www.politie.nl",
+                                timestamp: Date.now()
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 2,
+                name: "Verkeer & Handhaving",
+                lessons: [
+                    {
+                        id: 201,
+                        name: "Verkeersregels",
+                        elements: [
+                            {
+                                id: 2001,
+                                type: "tekst",
+                                content: "In deze les behandelen we de belangrijkste verkeersregels.",
+                                timestamp: Date.now()
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    };
 
-    <!-- Optie 3: Ander Element -->
-    <div id="element3" class="element-view">
-        <div class="placeholder-box">
-            <h2>Element 3</h2>
-            <p>Hier komt nog een ander onderdeel te staan.</p>
-        </div>
-    </div>
+    // Initialisatie
+    document.addEventListener('DOMContentLoaded', () => {
+        loadFromLocalStorage();
+        renderThemeList();
+        updateNav();
+    });
 
-    <script>
-        function showElement(id) {
-            // Verberg alle elementen
-            document.querySelectorAll('.element-view').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.element-btn').forEach(btn => btn.classList.remove('active'));
+    // Local Storage management
+    function saveToLocalStorage() {
+        localStorage.setItem('politieschool_themes', JSON.stringify(state.themes));
+        localStorage.setItem('politieschool_currentUser', JSON.stringify(state.currentUser));
+        localStorage.setItem('politieschool_activeLesson', JSON.stringify(state.activeLesson));
+    }
 
-            // Toon geselecteerd element
-            document.getElementById(id).classList.add('active');
-            event.currentTarget.classList.add('active');
+    function loadFromLocalStorage() {
+        const savedThemes = localStorage.getItem('politieschool_themes');
+        if (savedThemes) {
+            state.themes = JSON.parse(savedThemes);
+        } else {
+            const savedLessons = localStorage.getItem('politieschool_lessons');
+            if (savedLessons) {
+                state.themes = [{ id: 1, name: "Algemeen", lessons: JSON.parse(savedLessons) }];
+            }
         }
-    </script>
+        
+        const savedActiveLesson = localStorage.getItem('politieschool_activeLesson');
+        if (savedActiveLesson) {
+            state.activeLesson = JSON.parse(savedActiveLesson);
+        }
+
+        const savedUser = localStorage.getItem('politieschool_currentUser');
+        if (savedUser) {
+            state.currentUser = JSON.parse(savedUser);
+            updateNav();
+            showDashboard();
+        }
+    }
+
+    // Login functies
+    function openDocentLoginModal() {
+        document.getElementById('docentPassword').value = '';
+        document.getElementById('docentLoginError').style.display = 'none';
+        document.getElementById('docentLoginModal').style.display = 'flex';
+        setTimeout(() => document.getElementById('docentPassword').focus(), 100);
+    }
+
+    function submitDocentLogin() {
+        const passwordInput = document.getElementById('docentPassword').value;
+        if (passwordInput === 'docent') {
+            closeModal('docentLoginModal');
+            loginUser('docent');
+        } else {
+            document.getElementById('docentLoginError').style.display = 'block';
+        }
+    }
+
+    function loginUser(role) {
+        if (role === 'student') {
+            const voornaamInput = document.getElementById('studentVoornaam');
+            const voornaam = voornaamInput ? voornaamInput.value.trim() : '';
+            if (!voornaam) {
+                alert('Vul a.u.b. je voornaam in om in te loggen!');
+                return;
+            }
+            state.currentUser = { role: role, name: voornaam };
+        } else {
+            state.currentUser = { role: role };
+        }
+
+        saveToLocalStorage();
+        updateNav();
+        showDashboard();
+    }
+
+    function updateNav() {
+        const userInfo = document.getElementById('userInfo');
+        if (state.currentUser) {
+            const roleLabel = state.currentUser.role === 'docent' ?
+                '👨‍🏫 Docent' : `👮 Student (${state.currentUser.name})`;
+            userInfo.innerHTML = `
+                <span class="role-badge ${state.currentUser.role === 'docent' ? 'role-docent' : 'role-student'}">
+                    ${roleLabel}
+                </span>
+                <button class="btn btn-danger btn-sm" onclick="logout()">Uitloggen</button>
+            `;
+        } else {
+            userInfo.innerHTML = '';
+        }
+    }
+
+    function logout() {
+        state.currentUser = null;
+        state.currentLesson = null;
+        state.currentTheme = null;
+        saveToLocalStorage();
+        updateNav();
+        document.getElementById('docentDashboard').style.display = 'none';
+        document.getElementById('studentDashboard').style.display = 'none';
+    }
+
+    function showDashboard() {
+        if (!state.currentUser) return;
+        document.getElementById('docentDashboard').style.display = 
+            state.currentUser.role === 'docent' ? 'block' : 'none';
+        document.getElementById('studentDashboard').style.display = 
+            state.currentUser.role === 'student' ? 'block' : 'none';
+        
+        if (state.currentUser.role === 'docent') {
+            renderThemeList();
+            renderLessonElements();
+            renderDocentLiveView();
+        } else {
+            renderStudentView();
+        }
+    }
+
+    // Thema Beheer
+    function addThemeModal() {
+        document.getElementById('addThemeModal').style.display = 'flex';
+        document.getElementById('newThemeName').value = '';
+    }
+
+    function saveNewTheme() {
+        const themeName = document.getElementById('newThemeName').value.trim();
+        if (!themeName) return;
+
+        const newTheme = {
+            id: Date.now(),
+            name: themeName,
+            lessons: []
+        };
+        state.themes.push(newTheme);
+        saveToLocalStorage();
+        renderThemeList();
+        closeModal('addThemeModal');
+    }
+
+    function deleteTheme(themeId) {
+        if (confirm('Weet je zeker dat je dit thema en alle bijbehorende lessen wilt verwijderen?')) {
+            const theme = state.themes.find(t => t.id === themeId);
+            if (theme && state.currentLesson && theme.lessons.some(l => l.id === state.currentLesson.id)) {
+                resetEditArea();
+            }
+            if (theme && state.activeLesson && theme.lessons.some(l => l.id === state.activeLesson.id)) {
+                state.activeLesson = null;
+            }
+            state.themes = state.themes.filter(t => t.id !== themeId);
+            saveToLocalStorage();
+            renderThemeList();
+            renderDocentLiveView();
+        }
+    }
+
+    // Les Beheer
+    function addLessonModal(themeId) {
+        state.selectedThemeIdForNewLesson = themeId;
+        document.getElementById('addLessonModal').style.display = 'flex';
+        document.getElementById('newLessonName').value = '';
+    }
+
+    function saveNewLesson() {
+        const lessonName = document.getElementById('newLessonName').value.trim();
+        if (!lessonName || !state.selectedThemeIdForNewLesson) return;
+
+        const theme = state.themes.find(t => t.id === state.selectedThemeIdForNewLesson);
+        if (theme) {
+            const newLesson = {
+                id: Date.now(),
+                name: lessonName,
+                elements: []
+            };
+            theme.lessons.push(newLesson);
+            saveToLocalStorage();
+            renderThemeList();
+            closeModal('addLessonModal');
+        }
+    }
+
+    function deleteLesson(themeId, lessonId) {
+        if (confirm('Weet je zeker dat je deze les wilt verwijderen?')) {
+            const theme = state.themes.find(t => t.id === themeId);
+            if (theme) {
+                theme.lessons = theme.lessons.filter(l => l.id !== lessonId);
+                if (state.currentLesson && state.currentLesson.id === lessonId) {
+                    resetEditArea();
+                }
+                if (state.activeLesson && state.activeLesson.id === lessonId) {
+                    state.activeLesson = null;
+                }
+                saveToLocalStorage();
+                renderThemeList();
+                renderDocentLiveView();
+            }
+        }
+    }
+
+    function selectLesson(themeId, lessonId) {
+        const theme = state.themes.find(t => t.id === themeId);
+        if (theme) {
+            const lesson = theme.lessons.find(l => l.id === lessonId);
+            if (lesson) {
+                state.currentTheme = theme;
+                state.currentLesson = lesson;
+                renderLessonElements();
+                renderThemeList();
+                document.getElementById('activeLessonTitle').innerHTML = 
+                    `<span style="color:#667eea;">📁 ${theme.name}</span> ➔ 📖 ${lesson.name}`;
+                document.getElementById('elementControls').style.display = 'block';
+            }
+        }
+    }
+
+    function resetEditArea() {
+        state.currentLesson = null;
+        state.currentTheme = null;
+        document.getElementById('lessonElements').innerHTML = 
+            '<p style="text-align: center; color: #999; padding: 50px;">Selecteer een les uit een thema om de elementen te bekijken</p>';
+        document.getElementById('elementControls').style.display = 'none';
+        document.getElementById('activeLessonTitle').textContent = 'Selecteer een les om te bewerken';
+    }
+
+    function renderThemeList() {
+        const themeList = document.getElementById('themeList');
+        if (!themeList) return;
+        themeList.innerHTML = '';
+
+        if (state.themes.length === 0) {
+            themeList.innerHTML = '<p style="text-align: center; color: #999; padding: 10px;">Nog geen thema\'s. Maak een thema aan!</p>';
+            return;
+        }
+
+        state.themes.forEach(theme => {
+            const themeCard = document.createElement('div');
+            themeCard.className = 'theme-card';
+
+            let lessonsHTML = '';
+            if (theme.lessons.length === 0) {
+                lessonsHTML = '<div style="font-size: 0.85em; color: #999; margin: 5px 0;">Geen lessen in dit thema.</div>';
+            } else {
+                theme.lessons.forEach(lesson => {
+                    const isSelected = state.currentLesson && state.currentLesson.id === lesson.id;
+                    lessonsHTML += `
+                        <div class="lesson-card" style="margin-bottom: 8px; ${isSelected ? 'border-color: #667eea; background: #eef2ff;' : ''}">
+                            <div class="lesson-header">
+                                <span class="lesson-title">📖 ${lesson.name}</span>
+                                <button class="btn btn-danger btn-sm" style="padding: 2px 6px; font-size: 0.75em;" onclick="deleteLesson(${theme.id}, ${lesson.id})">✖</button>
+                            </div>
+                            <div style="font-size: 0.8em; color: #666; margin-bottom: 5px;">
+                                ${lesson.elements.length} elementen
+                            </div>
+                            <button class="btn btn-primary btn-sm" onclick="selectLesson(${theme.id}, ${lesson.id})" style="width: 100%; padding: 4px; font-size: 0.85em;">
+                                Bewerken
+                            </button>
+                        </div>
+                    `;
+                });
+            }
+
+            themeCard.innerHTML = `
+                <div class="theme-header">
+                    <span>📁 ${theme.name}</span>
+                    <button class="btn btn-danger btn-sm" style="padding: 2px 6px; font-size: 0.75em;" onclick="deleteTheme(${theme.id})">✖</button>
+                </div>
+                <button class="btn btn-sm btn-info" style="width: 100%; margin-bottom: 8px; font-size: 0.8em;" onclick="addLessonModal(${theme.id})">
+                    ➕ Les toevoegen aan thema
+                </button>
+                <div class="theme-lessons">
+                    ${lessonsHTML}
+                </div>
+            `;
+
+            themeList.appendChild(themeCard);
+        });
+    }
+
+    function renderLessonElements() {
+        const lessonElements = document.getElementById('lessonElements');
+        if (!state.currentLesson) {
+            resetEditArea();
+            return;
+        }
+        
+        lessonElements.innerHTML = '<div class="lesson-content">';
+        if (state.currentLesson.elements.length === 0) {
+            lessonElements.innerHTML += 
+                '<p style="text-align: center; color: #999; padding: 30px;">Nog geen elementen. Voeg een element toe!</p>';
+        } else {
+            state.currentLesson.elements.forEach(element => {
+                lessonElements.innerHTML += generateElementHTML(element);
+            });
+        }
+        
+        lessonElements.innerHTML += '</div>';
+    }
+
+    function generateElementHTML(element) {
+        let contentHTML = '';
+        switch(element.type) {
+            case 'tekst':
+                contentHTML = `<div class="element-content"><p style="white-space: pre-wrap;">${element.content}</p></div>`;
+                break;
+            case 'iframe':
+                contentHTML = `<div class="element-content"><iframe src="${element.content}" allowfullscreen></iframe></div>`;
+                break;
+            case 'afbeelding':
+                contentHTML = `<div class="element-content"><img src="${element.content}" alt="Afbeelding"></div>`;
+                break;
+            case 'pdf':
+                // Gebruik iframe voor PDF-weergave
+                contentHTML = `<div class="element-content"><iframe src="${element.content}" style="width:100%; height:600px;" frameborder="0"></iframe></div>`;
+                break;
+            case 'digibord':
+                // Vervang placeholder __ROOM__ door element.content
+                const digibordSrc = DIGIBORD_HTML.replace('__ROOM__', element.content);
+                contentHTML = `<div class="element-content"><iframe srcdoc="${digibordSrc}" style="width:100%; height:650px;"></iframe></div>`;
+                break;
+        }
+        
+        return `
+            <div class="element">
+                <span class="element-type type-${element.type}">${getTypeLabel(element.type)}</span>
+                <button class="btn btn-danger btn-sm" onclick="deleteElement(${element.id})" style="float: right; margin-bottom: 5px;">✖</button>
+                ${contentHTML}
+            </div>
+        `;
+    }
+
+    function getTypeLabel(type) {
+        const labels = {
+            'tekst': '📝 Tekst',
+            'digibord': '🖥️ Digibord',
+            'iframe': '🌐 Iframe',
+            'afbeelding': '🖼️ Afbeelding',
+            'pdf': '📄 PDF'
+        };
+        return labels[type] || type;
+    }
+
+    function addElement() {
+        const type = document.getElementById('elementType').value;
+        document.getElementById('elementModalTitle').textContent = `Voeg ${getTypeLabel(type)} toe`;
+        
+        const inputArea = document.getElementById('elementInputArea');
+        
+        switch(type) {
+            case 'tekst':
+                inputArea.innerHTML = `<textarea id="elementContent" placeholder="Voer je tekst in..."></textarea>`;
+                break;
+            case 'digibord':
+                inputArea.innerHTML = `
+                    <label for="elementBoardName">Naam van het bord (gebruik een unieke naam, bijv. les123):</label>
+                    <input type="text" id="elementContent" placeholder="bijv. les1-verkeer" value="${state.currentLesson ? state.currentLesson.id : ''}">
+                    <p style="font-size: 0.8em; color: #666;">Tip: laat leeg voor automatisch gegenereerde naam op basis van les-ID.</p>
+                `;
+                break;
+            case 'iframe':
+                inputArea.innerHTML = `<input type="url" id="elementContent" placeholder="https://www.voorbeeld.nl" required>`;
+                break;
+            case 'afbeelding':
+                inputArea.innerHTML = `
+                    <input type="file" id="elementFile" accept="image/*">
+                    <input type="url" id="elementContent" placeholder="Of plak een afbeelding URL hier">
+                `;
+                break;
+            case 'pdf':
+                inputArea.innerHTML = `
+                    <input type="file" id="elementFile" accept=".pdf">
+                    <input type="url" id="elementContent" placeholder="Of plak een PDF URL hier">
+                `;
+                break;
+        }
+        
+        document.getElementById('addElementModal').style.display = 'flex';
+    }
+
+    function saveElement() {
+        if (!state.currentLesson) return;
+        const type = document.getElementById('elementType').value;
+        let content = '';
+        
+        if (type === 'afbeelding' || type === 'pdf') {
+            const fileInput = document.getElementById('elementFile');
+            const urlInput = document.getElementById('elementContent');
+            
+            if (fileInput.files.length > 0) {
+                content = URL.createObjectURL(fileInput.files[0]);
+            } else if (urlInput.value) {
+                content = urlInput.value;
+            } else {
+                alert('Voeg een bestand of URL toe!');
+                return;
+            }
+        } else if (type === 'digibord') {
+            content = document.getElementById('elementContent').value.trim();
+            if (!content) {
+                // Automatisch genereren op basis van les-ID
+                content = 'board-' + state.currentLesson.id;
+            }
+        } else {
+            content = document.getElementById('elementContent').value;
+        }
+        
+        if (!content) {
+            alert('Vul de inhoud in!');
+            return;
+        }
+        
+        const newElement = {
+            id: Date.now(),
+            type: type,
+            content: content,
+            timestamp: Date.now()
+        };
+        state.currentLesson.elements.push(newElement);
+
+        if (state.activeLesson && state.activeLesson.id === state.currentLesson.id) {
+            state.activeLesson = state.currentLesson;
+        }
+
+        saveToLocalStorage();
+        renderLessonElements();
+        renderThemeList();
+        renderDocentLiveView();
+        closeModal('addElementModal');
+    }
+
+    function deleteElement(elementId) {
+        if (!state.currentLesson) return;
+        if (confirm('Weet je zeker dat je dit element wilt verwijderen?')) {
+            state.currentLesson.elements = state.currentLesson.elements.filter(e => e.id !== elementId);
+            
+            if (state.activeLesson && state.activeLesson.id === state.currentLesson.id) {
+                state.activeLesson = state.currentLesson;
+            }
+
+            saveToLocalStorage();
+            renderLessonElements();
+            renderThemeList();
+            renderDocentLiveView();
+        }
+    }
+
+    function startLesson() {
+        if (!state.currentLesson) {
+            alert('Selecteer eerst een les!');
+            return;
+        }
+        
+        state.activeLesson = {
+            ...state.currentLesson,
+            themeName: state.currentTheme ? state.currentTheme.name : ''
+        };
+        saveToLocalStorage();
+        renderDocentLiveView();
+        
+        alert(`🎯 Les "${state.currentLesson.name}" wordt nu gegeven aan alle studenten!`);
+    }
+
+    function renderDocentLiveView() {
+        const liveContainer = document.getElementById('docentLiveView');
+        const liveContent = document.getElementById('docentLiveContent');
+        if (!liveContainer || !liveContent) return;
+
+        if (state.activeLesson) {
+            liveContainer.style.display = 'block';
+            liveContent.innerHTML = `
+                <h3>📁 ${state.activeLesson.themeName || 'Thema'} ➔ 📖 Actieve les: ${state.activeLesson.name}</h3>
+                <div class="lesson-content">
+                    ${state.activeLesson.elements.map(element => generateElementHTML(element)).join('')}
+                </div>
+            `;
+        } else {
+            liveContainer.style.display = 'none';
+        }
+    }
+
+    // Student functies
+    function renderStudentView() {
+        const studentInfo = document.getElementById('studentLessonInfo');
+        const welcomeName = document.getElementById('studentWelcomeName');
+        if (welcomeName && state.currentUser && state.currentUser.name) {
+            welcomeName.textContent = state.currentUser.name;
+        }
+
+        if (state.activeLesson) {
+            studentInfo.innerHTML = `
+                <h3 style="color: #667eea; margin-bottom: 5px;">📁 ${state.activeLesson.themeName || ''}</h3>
+                <h2>📖 Actieve les: ${state.activeLesson.name}</h2>
+                <div class="lesson-content" style="text-align: left; margin-top: 15px;">
+                    ${state.activeLesson.elements.map(element => generateElementHTML(element)).join('')}
+                </div>
+            `;
+        } else {
+            studentInfo.innerHTML = `
+                <div class="waiting-animation">
+                    ⏳ Wachten tot de docent de les start...
+                    <br><br>
+                    <span style="font-size: 0.8em; color: #999;">Kijk regelmatig terug voor updates</span>
+                </div>
+            `;
+        }
+    }
+
+    // Modal functies
+    function closeModal(modalId) {
+        document.getElementById(modalId).style.display = 'none';
+    }
+
+    // Polling voor actieve lessen synchronisatie (werkt op hetzelfde apparaat)
+    setInterval(() => {
+        const savedActive = localStorage.getItem('politieschool_activeLesson');
+        const parsedActive = savedActive ? JSON.parse(savedActive) : null;
+        
+        state.activeLesson = parsedActive;
+
+        if (state.currentUser) {
+            if (state.currentUser.role === 'student') {
+                renderStudentView();
+            } else if (state.currentUser.role === 'docent') {
+                renderDocentLiveView();
+            }
+        }
+    }, 1000);
+
+    // Bestandsupload preview
+    document.addEventListener('change', function(e) {
+        if (e.target.id === 'elementFile') {
+            const file = e.target.files[0];
+            if (file) {
+                const url = URL.createObjectURL(file);
+                const urlInput = document.getElementById('elementContent');
+                if (urlInput) {
+                    urlInput.value = url;
+                }
+            }
+        }
+    });
+</script>
 </body>
 </html>
