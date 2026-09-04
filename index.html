@@ -216,6 +216,121 @@
             border-radius: 6px;
         }
 
+        /* Digibord specifieke styling */
+        .digibord-container {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            border-radius: 10px;
+            min-height: 400px;
+            position: relative;
+        }
+
+        .digibord-toolbar {
+            background: rgba(255,255,255,0.9);
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
+
+        .digibord-tool {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+            background: #f0f0f0;
+            transition: all 0.2s;
+        }
+
+        .digibord-tool:hover {
+            background: #e0e0e0;
+        }
+
+        .digibord-tool.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .digibord-color-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: 2px solid white;
+            cursor: pointer;
+            margin: 3px;
+            transition: transform 0.2s;
+        }
+
+        .digibord-color-btn:hover {
+            transform: scale(1.2);
+        }
+
+        .digibord-color-btn.active {
+            border: 3px solid #333;
+            transform: scale(1.1);
+        }
+
+        .digibord-canvas {
+            background: white;
+            border-radius: 8px;
+            min-height: 300px;
+            cursor: crosshair;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .digibord-input-area {
+            margin-top: 15px;
+            background: rgba(255,255,255,0.9);
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .digibord-text-input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .digibord-text-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .digibord-actions {
+            margin-top: 10px;
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .digibord-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 10px;
+            z-index: 10;
+        }
+
+        .digibord-overlay-content {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 500px;
+            width: 90%;
+        }
+
         /* Upload form */
         .upload-area {
             margin-top: 10px;
@@ -671,10 +786,7 @@
                 contentHTML = `<div class="element-content"><pdf-viewer src="${element.content}"></pdf-viewer></div>`;
                 break;
             case 'digibord':
-                contentHTML = `<div class="element-content" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; border-radius: 10px;">
-                    <h3>🖥️ Digibord</h3>
-                    <p>${element.content}</p>
-                </div>`;
+                contentHTML = generateDigibordHTML(element);
                 break;
         }
         
@@ -687,178 +799,235 @@
         `;
     }
 
-    function getTypeLabel(type) {
-        const labels = {
-            'tekst': '📝 Tekst',
-            'digibord': '🖥️ Digibord',
-            'iframe': '🌐 Iframe',
-            'afbeelding': '🖼️ Afbeelding',
-            'pdf': '📄 PDF'
-        };
-        return labels[type] || type;
+    // Nieuwe functies voor interactief digibord
+    function generateDigibordHTML(element) {
+        return `
+            <div class="digibord-container">
+                <div class="digibord-toolbar">
+                    <button class="digibord-tool" onclick="setDigibordTool('pen', ${element.id})" id="pen-${element.id}">✏️ Pen</button>
+                    <button class="digibord-tool" onclick="setDigibordTool('marker', ${element.id})" id="marker-${element.id}">🖍️ Marker</button>
+                    <button class="digibord-tool" onclick="setDigibordTool('eraser', ${element.id})" id="eraser-${element.id}">🧽 Gum</button>
+                    <button class="digibord-tool" onclick="setDigibordTool('text', ${element.id})" id="text-${element.id}">📝 Tekst</button>
+                    <button class="digibord-tool" onclick="setDigibordTool('shapes', ${element.id})" id="shapes-${element.id}">⬜ Vormen</button>
+                    <button class="digibord-tool" onclick="clearDigibord(${element.id})">🗑️ Wissen</button>
+                    
+                    <div style="margin-left: auto; display: flex; align-items: center;">
+                        <span style="margin-right: 5px; font-size: 12px;">Kleur:</span>
+                        <div class="digibord-color-btn" style="background: #000000;" onclick="setDigibordColor('#000000', ${element.id})" id="color-black-${element.id}"></div>
+                        <div class="digibord-color-btn" style="background: #ff0000;" onclick="setDigibordColor('#ff0000', ${element.id})" id="color-red-${element.id}"></div>
+                        <div class="digibord-color-btn" style="background: #0000ff;" onclick="setDigibordColor('#0000ff', ${element.id})" id="color-blue-${element.id}"></div>
+                        <div class="digibord-color-btn" style="background: #00ff00;" onclick="setDigibordColor('#00ff00', ${element.id})" id="color-green-${element.id}"></div>
+                        <div class="digibord-color-btn" style="background: #ff00ff;" onclick="setDigibordColor('#ff00ff', ${element.id})" id="color-pink-${element.id}"></div>
+                        <div class="digibord-color-btn" style="background: #ffa500;" onclick="setDigibordColor('#ffa500', ${element.id})" id="color-orange-${element.id}"></div>
+                    </div>
+                </div>
+                
+                <div class="digibord-canvas" id="digibord-canvas-${element.id}">
+                    <canvas id="digibord-draw-${element.id}" width="800" height="400" style="width: 100%; height: 100%;"></canvas>
+                </div>
+                
+                <div class="digibord-input-area" id="digibord-input-${element.id}" style="display: none;">
+                    <input type="text" class="digibord-text-input" id="digibord-text-${element.id}" placeholder="Typ hier je tekst...">
+                    <button class="btn btn-primary btn-sm" onclick="addDigibordText(${element.id})">Tekst toevoegen</button>
+                </div>
+                
+                <div class="digibord-actions">
+                    <button class="btn btn-warning btn-sm" onclick="showDigibordOverlay(${element.id})">💾 Opslaan als afbeelding</button>
+                </div>
+            </div>
+        `;
     }
 
-    function addElement() {
-        const type = document.getElementById('elementType').value;
-        document.getElementById('elementModalTitle').textContent = `Voeg ${getTypeLabel(type)} toe`;
-        
-        const inputArea = document.getElementById('elementInputArea');
-        
-        switch(type) {
-            case 'tekst':
-                inputArea.innerHTML = `
-                    <textarea id="elementContent" placeholder="Voer je tekst in..."></textarea>
-                `;
-                break;
-            case 'digibord':
-                inputArea.innerHTML = `
-                    <textarea id="elementContent" placeholder="Voer de inhoud voor het digibord in..."></textarea>
-                `;
-                break;
-            case 'iframe':
-                inputArea.innerHTML = `
-                    <input type="url" id="elementContent" placeholder="https://www.voorbeeld.nl" required>
-                `;
-                break;
-            case 'afbeelding':
-                inputArea.innerHTML = `
-                    <input type="file" id="elementFile" accept="image/*">
-                    <input type="url" id="elementContent" placeholder="Of plak een afbeelding URL hier">
-                `;
-                break;
-            case 'pdf':
-                inputArea.innerHTML = `
-                    <input type="file" id="elementFile" accept=".pdf">
-                    <input type="url" id="elementContent" placeholder="Of plak een PDF URL hier">
-                `;
-                break;
+    // Digibord state management
+    let digibordStates = {};
+
+    function getDigibordState(elementId) {
+        if (!digibordStates[elementId]) {
+            digibordStates[elementId] = {
+                tool: 'pen',
+                color: '#000000',
+                isDrawing: false,
+                lastX: 0,
+                lastY: 0,
+                canvasWidth: 800,
+                canvasHeight: 400,
+                texts: [],
+                shapes: []
+            };
         }
-        
-        document.getElementById('addElementModal').style.display = 'flex';
+        return digibordStates[elementId];
     }
 
-    function saveElement() {
-        if (!state.currentLesson) return;
+    function setDigibordTool(tool, elementId) {
+        const state = getDigibordState(elementId);
+        state.tool = tool;
         
-        const type = document.getElementById('elementType').value;
-        let content = '';
+        // Update UI
+        const tools = ['pen', 'marker', 'eraser', 'text', 'shapes'];
+        tools.forEach(t => {
+            const btn = document.getElementById(`${t}-${elementId}`);
+            if (btn) {
+                btn.classList.toggle('active', t === tool);
+            }
+        });
         
-        if (type === 'afbeelding' || type === 'pdf') {
-            const fileInput = document.getElementById('elementFile');
-            const urlInput = document.getElementById('elementContent');
+        // Show/hide text input
+        const inputArea = document.getElementById(`digibord-input-${elementId}`);
+        if (tool === 'text') {
+            inputArea.style.display = 'block';
+        } else {
+            inputArea.style.display = 'none';
+        }
+    }
+
+    function setDigibordColor(color, elementId) {
+        const state = getDigibordState(elementId);
+        state.color = color;
+        
+        // Update UI
+        const colors = ['#000000', '#ff0000', '#0000ff', '#00ff00', '#ff00ff', '#ffa500'];
+        colors.forEach(c => {
+            const btn = document.getElementById(`color-${c.replace('#', '')}-${elementId}`);
+            if (btn) {
+                btn.classList.toggle('active', c === color);
+            }
+        });
+    }
+
+    function clearDigibord(elementId) {
+        if (confirm('Weet je zeker dat je het digibord wilt wissen?')) {
+            const canvas = document.getElementById(`digibord-draw-${elementId}`);
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
             
-            if (fileInput.files.length > 0) {
-                content = URL.createObjectURL(fileInput.files[0]);
-            } else if (urlInput.value) {
-                content = urlInput.value;
-            } else {
-                alert('Voeg een bestand of URL toe!');
-                return;
-            }
-        } else {
-            content = document.getElementById('elementContent').value;
-        }
-        
-        if (!content) {
-            alert('Vul de inhoud in!');
-            return;
-        }
-        
-        const newElement = {
-            id: Date.now(),
-            type: type,
-            content: content,
-            timestamp: Date.now()
-        };
-        
-        state.currentLesson.elements.push(newElement);
-        saveToLocalStorage();
-        renderLessonElements();
-        closeModal('addElementModal');
-    }
-
-    function deleteElement(elementId) {
-        if (!state.currentLesson) return;
-        
-        if (confirm('Weet je zeker dat je dit element wilt verwijderen?')) {
-            state.currentLesson.elements = state.currentLesson.elements.filter(e => e.id !== elementId);
-            saveToLocalStorage();
-            renderLessonElements();
+            const state = getDigibordState(elementId);
+            state.texts = [];
+            state.shapes = [];
         }
     }
 
-    function startLesson() {
-        if (!state.currentLesson) {
-            alert('Selecteer eerst een les!');
-            return;
-        }
+    function addDigibordText(elementId) {
+        const textInput = document.getElementById(`digibord-text-${elementId}`);
+        const text = textInput.value.trim();
         
-        state.activeLesson = state.currentLesson;
-        saveToLocalStorage();
-        
-        alert(`🎯 Les "${state.currentLesson.name}" wordt nu gegeven aan alle studenten!`);
-    }
-
-    // Student functies
-    function renderStudentView() {
-        const studentInfo = document.getElementById('studentLessonInfo');
-        
-        if (state.activeLesson) {
-            studentInfo.innerHTML = `
-                <h2>📖 Actieve les: ${state.activeLesson.name}</h2>
-                <div class="lesson-content">
-                    ${state.activeLesson.elements.map(element => generateElementHTML(element)).join('')}
-                </div>
-            `;
-        } else {
-            studentInfo.innerHTML = `
-                <div class="waiting-animation">
-                    ⏳ Wachten tot de docent de les start...
-                    <br><br>
-                    <span style="font-size: 0.8em; color: #999;">Kijk regelmatig terug voor updates</span>
-                </div>
-            `;
+        if (text) {
+            const state = getDigibordState(elementId);
+            state.texts.push(text);
+            
+            const canvas = document.getElementById(`digibord-draw-${elementId}`);
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = state.color;
+            ctx.font = '20px Arial';
+            ctx.fillText(text, 50, state.texts.length * 30 + 50);
+            
+            textInput.value = '';
         }
     }
 
-    // Modal functies
-    function closeModal(modalId) {
-        document.getElementById(modalId).style.display = 'none';
+    function showDigibordOverlay(elementId) {
+        const canvas = document.getElementById(`digibord-draw-${elementId}`);
+        const overlay = document.createElement('div');
+        overlay.className = 'digibord-overlay';
+        overlay.innerHTML = `
+            <div class="digibord-overlay-content">
+                <h3>💾 Digibord opslaan</h3>
+                <p>Kies een optie:</p>
+                <button class="btn btn-primary" onclick="downloadDigibordImage(${elementId})">📥 Download als afbeelding</button>
+                <button class="btn btn-success" onclick="saveDigibordToLesson(${elementId})">💾 Opslaan in les</button>
+                <button class="btn btn-danger" onclick="this.parentElement.parentElement.remove()">Annuleren</button>
+            </div>
+        `;
+        
+        document.body.appendChild(overlay);
     }
 
-    // Polling voor studenten om te checken of er nieuwe lessen zijn
-    setInterval(() => {
-        if (state.currentUser && state.currentUser.role === 'student') {
-            // Check localStorage voor updates
-            const savedLessons = localStorage.getItem('politieschool_lessons');
-            if (savedLessons) {
-                const parsedLessons = JSON.parse(savedLessons);
-                // Check of activeLesson nog bestaat
-                if (state.activeLesson) {
-                    const updatedLesson = parsedLessons.find(l => l.id === state.activeLesson.id);
-                    if (updatedLesson) {
-                        state.activeLesson = updatedLesson;
-                        renderStudentView();
-                    }
-                }
+    function downloadDigibordImage(elementId) {
+        const canvas = document.getElementById(`digibord-draw-${elementId}`);
+        const link = document.createElement('a');
+        link.download = `digibord-${Date.now()}.png`;
+        link.href = canvas.toDataURL();
+        link.click();
+        
+        // Close overlay
+        const overlay = document.querySelector('.digibord-overlay');
+        if (overlay) overlay.remove();
+    }
+
+    function saveDigibordToLesson(elementId) {
+        const canvas = document.getElementById(`digibord-draw-${elementId}`);
+        const imageData = canvas.toDataURL();
+        
+        // Find the element in the current lesson
+        if (state.currentLesson) {
+            const element = state.currentLesson.elements.find(e => e.id === elementId);
+            if (element) {
+                element.content = `data:image/png;base64,${imageData.split(',')[1]}`;
+                saveToLocalStorage();
+                alert('Digibord is opgeslagen!');
             }
         }
-    }, 5000);
+        
+        // Close overlay
+        const overlay = document.querySelector('.digibord-overlay');
+        if (overlay) overlay.remove();
+    }
 
-    // Extra functie voor file upload preview
-    document.addEventListener('change', function(e) {
-        if (e.target.id === 'elementFile') {
-            const file = e.target.files[0];
-            if (file) {
-                const url = URL.createObjectURL(file);
-                const urlInput = document.getElementById('elementContent');
-                if (urlInput) {
-                    urlInput.value = url;
+    // Canvas teken functionaliteit
+    document.addEventListener('mousedown', function(e) {
+        if (e.target.tagName === 'CANVAS' && e.target.id.startsWith('digibord-draw-')) {
+            const elementId = parseInt(e.target.id.split('-')[2]);
+            const state = getDigibordState(elementId);
+            state.isDrawing = true;
+            
+            const rect = e.target.getBoundingClientRect();
+            state.lastX = e.clientX - rect.left;
+            state.lastY = e.clientY - rect.top;
+        }
+    });
+
+    document.addEventListener('mousemove', function(e) {
+        if (e.target.tagName === 'CANVAS' && e.target.id.startsWith('digibord-draw-')) {
+            const elementId = parseInt(e.target.id.split('-')[2]);
+            const state = getDigibordState(elementId);
+            
+            if (state.isDrawing) {
+                const ctx = e.target.getContext('2d');
+                const rect = e.target.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                ctx.strokeStyle = state.color;
+                ctx.lineWidth = state.tool === 'marker' ? 8 : state.tool === 'eraser' ? 20 : 3;
+                ctx.lineCap = 'round';
+                
+                if (state.tool === 'eraser') {
+                    ctx.globalCompositeOperation = 'destination-out';
+                    ctx.beginPath();
+                    ctx.moveTo(state.lastX, state.lastY);
+                    ctx.lineTo(x, y);
+                    ctx.stroke();
+                    ctx.globalCompositeOperation = 'source-over';
+                } else {
+                    ctx.beginPath();
+                    ctx.moveTo(state.lastX, state.lastY);
+                    ctx.lineTo(x, y);
+                    ctx.stroke();
                 }
+                
+                state.lastX = x;
+                state.lastY = y;
             }
         }
     });
-</script>
 
-</body>
-</html>
+    document.addEventListener('mouseup', function(e) {
+        if (e.target.tagName === 'CANVAS' && e.target.id.startsWith('digibord-draw-')) {
+            const elementId = parseInt(e.target.id.split('-')[2]);
+            const state = getDigibordState(elementId);
+            state.isDrawing = false;
+        }
+    });
+
+    function getTypeLabel(type) {
+        const labels = {
+            'tekst':
