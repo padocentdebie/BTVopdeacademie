@@ -49,6 +49,7 @@
 
         .login-area {
             display: flex;
+            align-items: center;
             gap: 10px;
         }
 
@@ -84,30 +85,11 @@
             box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         }
 
-        .btn-success {
-            background: #28a745;
-            color: white;
-        }
-
-        .btn-danger {
-            background: #dc3545;
-            color: white;
-        }
-
-        .btn-warning {
-            background: #ffc107;
-            color: #333;
-        }
-
-        .btn-info {
-            background: #17a2b8;
-            color: white;
-        }
-
-        .btn-sm {
-            padding: 6px 12px;
-            font-size: 0.9em;
-        }
+        .btn-success { background: #28a745; color: white; }
+        .btn-danger { background: #dc3545; color: white; }
+        .btn-warning { background: #ffc107; color: #333; }
+        .btn-info { background: #17a2b8; color: white; }
+        .btn-sm { padding: 6px 12px; font-size: 0.9em; }
 
         /* Les secties */
         .lessons-section {
@@ -335,17 +317,9 @@
 
         /* Responsive */
         @media (max-width: 768px) {
-            .dashboard {
-                grid-template-columns: 1fr;
-            }
-            
-            .lessons-section {
-                grid-template-columns: 1fr;
-            }
-            
-            .grid-2 {
-                grid-template-columns: 1fr;
-            }
+            .dashboard { grid-template-columns: 1fr; }
+            .lessons-section { grid-template-columns: 1fr; }
+            .grid-2 { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -354,28 +328,24 @@
 <div class="container">
     <h1>🏛️ Politieschool - Lessensysteem</h1>
     
-    <!-- Navigatie -->
     <div class="nav">
         <div class="login-area">
             <button class="btn btn-primary" onclick="loginUser('docent')">👨‍🏫 Inloggen als Docent</button>
+            <input type="text" id="studentVoornaam" placeholder="Voornaam student..." style="padding: 8px 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 0.9em;">
             <button class="btn btn-info" onclick="loginUser('student')">👮 Inloggen als Student</button>
         </div>
         <div id="userInfo"></div>
     </div>
 
-    <!-- Docent Dashboard -->
     <div id="docentDashboard" style="display: none;">
         <div class="dashboard">
-            <!-- Sidebar met lessen -->
             <div class="sidebar">
                 <h3>📚 Lessen</h3>
                 <button class="btn btn-success" onclick="addLessonModal()">➕ Nieuwe Les</button>
                 <div id="lessonList" class="lessons-section" style="display: block; margin-top: 20px;">
-                    <!-- Lessen worden hier gegenereerd -->
-                </div>
+                    </div>
             </div>
 
-            <!-- Hoofd content met les elementen -->
             <div class="main-content">
                 <div class="lesson-section-title" id="activeLessonTitle">Selecteer een les om te bewerken</div>
                 
@@ -395,14 +365,18 @@
                     <button class="btn btn-success" onclick="addElement()">Element toevoegen</button>
                     <button class="btn btn-warning" onclick="startLesson()">🎯 Lesgeven</button>
                 </div>
+
+                <div id="docentLiveView" style="display: none; margin-top: 30px; padding: 20px; background: #f0fff0; border: 3px solid #28a745; border-radius: 10px;">
+                    <h2 style="color: #28a745; margin-bottom: 15px;">📺 Actieve Les (Wat de studenten nu zien)</h2>
+                    <div id="docentLiveContent"></div>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Student Dashboard -->
     <div id="studentDashboard" style="display: none;">
         <div class="student-view">
-            <h2>👮 Welkom Student</h2>
+            <h2>👮 Welkom <span id="studentWelcomeName">Student</span></h2>
             <div id="studentLessonInfo">
                 <div class="waiting-animation">
                     ⏳ Wachten tot de docent de les start...
@@ -412,7 +386,6 @@
     </div>
 </div>
 
-<!-- Modals -->
 <div class="modal-overlay" id="addLessonModal">
     <div class="modal">
         <h3>➕ Nieuwe les toevoegen</h3>
@@ -428,8 +401,7 @@
     <div class="modal">
         <h3 id="elementModalTitle">Element toevoegen</h3>
         <div id="elementInputArea">
-            <!-- Dynamisch gegenereerde input velden -->
-        </div>
+            </div>
         <div class="modal-buttons">
             <button class="btn btn-danger" onclick="closeModal('addElementModal')">Annuleren</button>
             <button class="btn btn-success" onclick="saveElement()">Opslaan</button>
@@ -451,7 +423,7 @@
                     {
                         id: 101,
                         type: "tekst",
-                        content: "Welkom bij de politieschool! Dit is de introductieles.",
+                        content: "Welkom bij de politieschool!\nDit is de introductieles.",
                         timestamp: Date.now()
                     },
                     {
@@ -489,6 +461,7 @@
     function saveToLocalStorage() {
         localStorage.setItem('politieschool_lessons', JSON.stringify(state.lessons));
         localStorage.setItem('politieschool_currentUser', JSON.stringify(state.currentUser));
+        localStorage.setItem('politieschool_activeLesson', JSON.stringify(state.activeLesson));
     }
 
     function loadFromLocalStorage() {
@@ -497,6 +470,11 @@
             state.lessons = JSON.parse(savedLessons);
         }
         
+        const savedActiveLesson = localStorage.getItem('politieschool_activeLesson');
+        if (savedActiveLesson) {
+            state.activeLesson = JSON.parse(savedActiveLesson);
+        }
+
         const savedUser = localStorage.getItem('politieschool_currentUser');
         if (savedUser) {
             state.currentUser = JSON.parse(savedUser);
@@ -507,7 +485,18 @@
 
     // Login functies
     function loginUser(role) {
-        state.currentUser = { role: role };
+        if (role === 'student') {
+            const voornaamInput = document.getElementById('studentVoornaam');
+            const voornaam = voornaamInput ? voornaamInput.value.trim() : '';
+            if (!voornaam) {
+                alert('Vul a.u.b. je voornaam in om in te loggen!');
+                return;
+            }
+            state.currentUser = { role: role, name: voornaam };
+        } else {
+            state.currentUser = { role: role };
+        }
+
         saveToLocalStorage();
         updateNav();
         showDashboard();
@@ -520,7 +509,8 @@
     function updateNav() {
         const userInfo = document.getElementById('userInfo');
         if (state.currentUser) {
-            const roleLabel = state.currentUser.role === 'docent' ? '👨‍🏫 Docent' : '👮 Student';
+            const roleLabel = state.currentUser.role === 'docent' ?
+                '👨‍🏫 Docent' : `👮 Student (${state.currentUser.name})`;
             userInfo.innerHTML = `
                 <span class="role-badge ${state.currentUser.role === 'docent' ? 'role-docent' : 'role-student'}">
                     ${roleLabel}
@@ -535,7 +525,6 @@
     function logout() {
         state.currentUser = null;
         state.currentLesson = null;
-        state.activeLesson = null;
         saveToLocalStorage();
         updateNav();
         document.getElementById('docentDashboard').style.display = 'none';
@@ -544,7 +533,6 @@
 
     function showDashboard() {
         if (!state.currentUser) return;
-        
         document.getElementById('docentDashboard').style.display = 
             state.currentUser.role === 'docent' ? 'block' : 'none';
         document.getElementById('studentDashboard').style.display = 
@@ -553,6 +541,7 @@
         if (state.currentUser.role === 'docent') {
             renderLessonList();
             renderLessonElements();
+            renderDocentLiveView();
         } else {
             renderStudentView();
         }
@@ -573,7 +562,6 @@
             name: lessonName,
             elements: []
         };
-        
         state.lessons.push(newLesson);
         saveToLocalStorage();
         renderLessonList();
@@ -626,14 +614,17 @@
                 document.getElementById('activeLessonTitle').textContent = 
                     'Selecteer een les om te bewerken';
             }
+            if (state.activeLesson && state.activeLesson.id === lessonId) {
+                state.activeLesson = null;
+            }
             saveToLocalStorage();
             renderLessonList();
+            renderDocentLiveView();
         }
     }
 
     function renderLessonElements() {
         const lessonElements = document.getElementById('lessonElements');
-        
         if (!state.currentLesson) {
             lessonElements.innerHTML = 
                 '<p style="text-align: center; color: #999; padding: 50px;">Selecteer een les om de elementen te bekijken</p>';
@@ -641,7 +632,6 @@
         }
         
         lessonElements.innerHTML = '<div class="lesson-content">';
-        
         if (state.currentLesson.elements.length === 0) {
             lessonElements.innerHTML += 
                 '<p style="text-align: center; color: #999; padding: 30px;">Nog geen elementen. Voeg een element toe!</p>';
@@ -656,7 +646,6 @@
 
     function generateElementHTML(element) {
         let contentHTML = '';
-        
         switch(element.type) {
             case 'tekst':
                 contentHTML = `<div class="element-content"><p style="white-space: pre-wrap;">${element.content}</p></div>`;
@@ -739,7 +728,6 @@
 
     function saveElement() {
         if (!state.currentLesson) return;
-        
         const type = document.getElementById('elementType').value;
         let content = '';
         
@@ -770,20 +758,30 @@
             content: content,
             timestamp: Date.now()
         };
-        
         state.currentLesson.elements.push(newElement);
+
+        if (state.activeLesson && state.activeLesson.id === state.currentLesson.id) {
+            state.activeLesson = state.currentLesson;
+        }
+
         saveToLocalStorage();
         renderLessonElements();
+        renderDocentLiveView();
         closeModal('addElementModal');
     }
 
     function deleteElement(elementId) {
         if (!state.currentLesson) return;
-        
         if (confirm('Weet je zeker dat je dit element wilt verwijderen?')) {
             state.currentLesson.elements = state.currentLesson.elements.filter(e => e.id !== elementId);
+            
+            if (state.activeLesson && state.activeLesson.id === state.currentLesson.id) {
+                state.activeLesson = state.currentLesson;
+            }
+
             saveToLocalStorage();
             renderLessonElements();
+            renderDocentLiveView();
         }
     }
 
@@ -795,14 +793,37 @@
         
         state.activeLesson = state.currentLesson;
         saveToLocalStorage();
+        renderDocentLiveView();
         
         alert(`🎯 Les "${state.currentLesson.name}" wordt nu gegeven aan alle studenten!`);
+    }
+
+    function renderDocentLiveView() {
+        const liveContainer = document.getElementById('docentLiveView');
+        const liveContent = document.getElementById('docentLiveContent');
+        if (!liveContainer || !liveContent) return;
+
+        if (state.activeLesson) {
+            liveContainer.style.display = 'block';
+            liveContent.innerHTML = `
+                <h3>📖 Actieve les: ${state.activeLesson.name}</h3>
+                <div class="lesson-content">
+                    ${state.activeLesson.elements.map(element => generateElementHTML(element)).join('')}
+                </div>
+            `;
+        } else {
+            liveContainer.style.display = 'none';
+        }
     }
 
     // Student functies
     function renderStudentView() {
         const studentInfo = document.getElementById('studentLessonInfo');
-        
+        const welcomeName = document.getElementById('studentWelcomeName');
+        if (welcomeName && state.currentUser && state.currentUser.name) {
+            welcomeName.textContent = state.currentUser.name;
+        }
+
         if (state.activeLesson) {
             studentInfo.innerHTML = `
                 <h2>📖 Actieve les: ${state.activeLesson.name}</h2>
@@ -826,24 +847,21 @@
         document.getElementById(modalId).style.display = 'none';
     }
 
-    // Polling voor studenten om te checken of er nieuwe lessen zijn
+    // Polling voor actieve lessen synchronisatie
     setInterval(() => {
-        if (state.currentUser && state.currentUser.role === 'student') {
-            // Check localStorage voor updates
-            const savedLessons = localStorage.getItem('politieschool_lessons');
-            if (savedLessons) {
-                const parsedLessons = JSON.parse(savedLessons);
-                // Check of activeLesson nog bestaat
-                if (state.activeLesson) {
-                    const updatedLesson = parsedLessons.find(l => l.id === state.activeLesson.id);
-                    if (updatedLesson) {
-                        state.activeLesson = updatedLesson;
-                        renderStudentView();
-                    }
-                }
+        const savedActive = localStorage.getItem('politieschool_activeLesson');
+        const parsedActive = savedActive ? JSON.parse(savedActive) : null;
+        
+        state.activeLesson = parsedActive;
+
+        if (state.currentUser) {
+            if (state.currentUser.role === 'student') {
+                renderStudentView();
+            } else if (state.currentUser.role === 'docent') {
+                renderDocentLiveView();
             }
         }
-    }, 5000);
+    }, 1000);
 
     // Extra functie voor file upload preview
     document.addEventListener('change', function(e) {
