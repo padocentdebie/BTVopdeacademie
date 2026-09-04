@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <title>Docent - Politieschool</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; background: #f4f4f4; }
+        .container { max-width: 900px; margin: auto; background: white; padding: 20px; border-radius: 8px; }
+        h1 { color: #003366; }
+        .q-buttons { margin-bottom: 20px; }
+        .q-buttons button { padding: 10px; margin-right: 5px; cursor: pointer; background: #003366; color: white; border: none; }
+        .lesson-box { border: 1px solid #ccc; padding: 15px; margin-bottom: 15px; border-radius: 5px; }
+        .elements { margin-top: 10px; border-top: 1px solid #eee; padding-top: 10px; }
+        .element-item { background: #e9f5ff; padding: 5px; margin: 5px 0; border-radius: 3px; }
+        input, select { margin: 5px; padding: 8px; }
+        #docent-area { display: none; }
+        .back-link { display: block; margin-bottom: 10px; }
+    </style>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+</head>
+<body>
+<div class="container">
+    <a href="index.html" class="back-link">← Terug naar start</a>
+    <h1>Docentomgeving</h1>
+    <button onclick="loginDocent()">Login als Docent</button>
+
+    <div id="docent-area">
+        <h3>Selecteer een Q:</h3>
+        <div class="q-buttons">
+            <button onclick="selectQ('Q')">Q</button>
+            <button onclick="selectQ('Q1')">Q1</button>
+            <button onclick="selectQ('Q2')">Q2</button>
+            <button onclick="selectQ('Q3')">Q3</button>
+            <button onclick="selectQ('Q4')">Q4</button>
+        </div>
+
+        <h3>Geselecteerde Q: <span id="currentQ">Q</span></h3>
+
+        <button onclick="addLesson()">Toevoegen nieuwe les</button>
+        <input type="text" id="lessonName" placeholder="Naam van de les">
+        
+        <div id="lessons-list"></div>
+    </div>
+</div>
+
+<script>
+    // 🔥 Jouw Firebase configuratie
+    const firebaseConfig = {
+        apiKey: "AIzaSyBEod8zm1jvvkmPbe6cA_SQo2U_esC9yTY",
+        authDomain: "aangiftebotje.firebaseapp.com",
+        databaseURL: "https://aangiftebotje-default-rtdb.europe-west1.firebasedatabase.app",
+        projectId: "aangiftebotje",
+        storageBucket: "aangiftebotje.firebasestorage.app",
+        messagingSenderId: "825633841222",
+        appId: "1:825633841222:web:15d93d08e2b719285dea47"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    // Globale variabelen
+    let currentQ = 'Q';
+    const lessonsRef = db.ref('politieschool/lessons');
+    const activeLessonRef = db.ref('politieschool/activeLesson');
+
+    // Luister naar alle lessen
+    lessonsRef.on('value', (snapshot) => {
+        const data = snapshot.val() || {};
+        renderLessons(data);
+    });
+
+    function loginDocent() {
+        document.getElementById('docent-area').style.display = 'block';
+    }
+
+    function selectQ(q) {
+        currentQ = q;
+        document.getElementById('currentQ').innerText = q;
+        // Forceer een re-render (de listener doet het automatisch)
+        lessonsRef.once('value', (snap) => renderLessons(snap.val()));
+    }
+
+    function addLesson() {
+        const name = document.getElementById('lessonName').value.trim();
+        if (!name) { alert('Voer een naam in!'); return; }
+
+        const newLessonRef = lessonsRef.child(currentQ).child(name);
+        newLessonRef.once('value', (snap) => {
+            if (snap.exists()) {
+                alert('Les bestaat al!');
+            } else {
+                newLessonRef.set([]); // Lege array
+                document.getElementById('lessonName').value = '';
+            }
+        });
+    }
+
+    function addElement(lessonName) {
+        const type = prompt('Kies type (tekst, digibord, iframe, afbeelding, pdf):');
+        if (!type) return;
+
+        let content = '';
+        switch(type) {
+            case 'tekst': content = prompt('Voer tekst in:'); break;
+            case 'iframe': content = prompt('Voer URL in:'); break;
+            case 'afbeelding': content = prompt('Voer afbeeldings-URL in:'); break;
+            case 'pdf': content = prompt('Voer PDF-URL in:'); break;
+            case 'digibord': content = 'Digibord activiteit'; break;
+            default: alert('Ongeldig type'); return;
+        }
+
+        if (content === null) return; // geannuleerd
+
+        const element = { type, content };
+        const lessonRef = lessonsRef.child(currentQ).child(lessonName);
+        lessonRef.once('value', (snap) => {
+            const arr = snap.val() || [];
+            arr.push(element);
+            lessonRef.set(arr);
+        });
+    }
+
+    function pushLesson(lessonName) {
+        const lessonRef = lessonsRef.child(currentQ).child(lessonName);
+        lessonRef.once('value', (snap) => {
+            const content = snap.val();
+            if (content) {
+                activeLessonRef.set({
+                    q: currentQ,
+                    lessonName: lessonName,
+                    content: content
+                });
+                alert('Les gepusht naar studenten!');
+            } else {
+                alert('Les is leeg of bestaat niet.');
+            }
+        });
+    }
+
+    function renderLessons(data) {
+        const list = document.getElementById('lessons-list');
+        list.innerHTML = '';
+
+        if (!data || !data[currentQ]) return;
+
+        const lessons = data[currentQ];
+        for (const name in lessons) {
+            const lessonBox = document.createElement('div');
+            lessonBox.className = 'lesson-box';
+            lessonBox.innerHTML = `<strong>${name}</strong> <button onclick="pushLesson('${name}')">Lesgeven</button>`;
+
+            const elementsDiv = document.createElement('div');
+            elementsDiv.className = 'elements';
+
+            lessons[name].forEach(el => {
+                let rendered = '';
+                if (el.type === 'tekst') rendered = `<p>${el.content}</p>`;
+                else if (el.type === 'digibord') rendered = `<div style="background:yellow; height:50px;">✍️ Digibord</div>`;
+                else if (el.type === 'iframe') rendered = `<iframe src="${el.content}" width="100%" height="300px"></iframe>`;
+                else if (el.type === 'afbeelding') rendered = `<img src="${el.content}" width="200px">`;
+                else if (el.type === 'pdf') rendered = `<a href="${el.content}" target="_blank">📄 Open PDF</a>`;
+                
+                const item = document.createElement('div');
+                item.className = 'element-item';
+                item.innerHTML = rendered;
+                elementsDiv.appendChild(item);
+            });
+
+            const addBtn = document.createElement('button');
+            addBtn.innerText = 'Nieuw element toevoegen';
+            addBtn.onclick = () => addElement(name);
+            elementsDiv.appendChild(addBtn);
+
+            lessonBox.appendChild(elementsDiv);
+            list.appendChild(lessonBox);
+        }
+    }
+</script>
+</body>
+</html>
