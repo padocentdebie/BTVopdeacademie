@@ -330,7 +330,7 @@
     
     <div class="nav">
         <div class="login-area">
-            <button class="btn btn-primary" onclick="loginUser('docent')">👨‍🏫 Inloggen als Docent</button>
+            <button class="btn btn-primary" onclick="openDocentLoginModal()">👨‍🏫 Inloggen als Docent</button>
             <input type="text" id="studentVoornaam" placeholder="Voornaam student..." style="padding: 8px 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 0.9em;">
             <button class="btn btn-info" onclick="loginUser('student')">👮 Inloggen als Student</button>
         </div>
@@ -343,7 +343,7 @@
                 <h3>📚 Lessen</h3>
                 <button class="btn btn-success" onclick="addLessonModal()">➕ Nieuwe Les</button>
                 <div id="lessonList" class="lessons-section" style="display: block; margin-top: 20px;">
-                    </div>
+                </div>
             </div>
 
             <div class="main-content">
@@ -386,6 +386,22 @@
     </div>
 </div>
 
+<!-- Modal: Inloggen Docent -->
+<div class="modal-overlay" id="docentLoginModal">
+    <div class="modal">
+        <h3>👨‍🏫 Docent Inloggen</h3>
+        <p style="margin-bottom: 15px; color: #666; font-size: 0.9em;">Voer het wachtwoord in om toegang te krijgen als docent.</p>
+        <input type="password" id="docentPassword" placeholder="Wachtwoord..." onkeyup="if(event.key === 'Enter') submitDocentLogin()">
+        <div id="docentLoginError" style="color: #dc3545; font-size: 0.9em; margin-bottom: 15px; display: none;">
+            ⚠️ Onjuist wachtwoord! Probeer het opnieuw.
+        </div>
+        <div class="modal-buttons">
+            <button class="btn btn-danger" onclick="closeModal('docentLoginModal')">Annuleren</button>
+            <button class="btn btn-success" onclick="submitDocentLogin()">Inloggen</button>
+        </div>
+    </div>
+</div>
+
 <div class="modal-overlay" id="addLessonModal">
     <div class="modal">
         <h3>➕ Nieuwe les toevoegen</h3>
@@ -401,7 +417,7 @@
     <div class="modal">
         <h3 id="elementModalTitle">Element toevoegen</h3>
         <div id="elementInputArea">
-            </div>
+        </div>
         <div class="modal-buttons">
             <button class="btn btn-danger" onclick="closeModal('addElementModal')">Annuleren</button>
             <button class="btn btn-success" onclick="saveElement()">Opslaan</button>
@@ -484,6 +500,23 @@
     }
 
     // Login functies
+    function openDocentLoginModal() {
+        document.getElementById('docentPassword').value = '';
+        document.getElementById('docentLoginError').style.display = 'none';
+        document.getElementById('docentLoginModal').style.display = 'flex';
+        setTimeout(() => document.getElementById('docentPassword').focus(), 100);
+    }
+
+    function submitDocentLogin() {
+        const passwordInput = document.getElementById('docentPassword').value;
+        if (passwordInput === 'docent') {
+            closeModal('docentLoginModal');
+            loginUser('docent');
+        } else {
+            document.getElementById('docentLoginError').style.display = 'block';
+        }
+    }
+
     function loginUser(role) {
         if (role === 'student') {
             const voornaamInput = document.getElementById('studentVoornaam');
